@@ -1,0 +1,57 @@
+[
+  {
+    "id": "amor_plus",
+    "patterns": [ "амор плюс" ],
+    "type": "good",
+    "cat": "mod",
+    "connections" : [ "vaporizer_from_amor_plus" ]
+  },
+  {
+    "id": "amor_mini",
+    "patterns": [ "амор мини" ],
+    "type": "good",
+    "cat": "mod",
+    "connections" : [ "vaporizer_from_amor_mini" ]
+  },
+  {
+    "id": "vaporizer",
+    "patterns": [ "испаритель" ],
+    "type": "class",
+    "connections" : [ "vaporizer_from_amor_mini", "vaporizer_from_amor_plus" ]
+  },
+  {
+    "id": "mod",
+    "patterns": [ "мод" ],
+    "type": "class",
+    "connections": [ "parts_of_mod" ]
+  },
+  {
+    "id": "parts_of_mod",
+    "intents": [ "is_part_of" ],
+    "type": "parts of",
+    "connections": [ "vaporizer" ]
+  },
+  {
+    "id": "vaporizer_from_amor_mini",
+    "type": "detail",
+    "connections": [ "vaporizer", "amor_plus", "vaporizer_from_amor_mini_compatibility" ]
+  },
+  {
+    "id": "vaporizer_from_amor_plus",
+    "type": "detail",
+    "connections": [ "vaporizer", "amor_plus", "vaporizer_from_amor_plus_compatibility" ]
+  },
+  {
+    "id": "vaporizer_from_amor_plus_compatibility",
+    "intents": [ "is_compatible" ],
+    "patterns": [ "подходит ли", "подходят ли", "подходить" ],
+    "type": "compatibility",
+    "connections": [ "amor_mini" ]
+  },
+  {
+    "id": "vaporizer_from_amor_mini_compatibility",
+    "intents": [ "is_compatible" ],
+    "type": "compatibility",
+    "connections": [ "amor_plus" ]
+  }
+]

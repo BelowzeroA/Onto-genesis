@@ -1,0 +1,143 @@
+[
+  {
+    "id": "unauthorized",
+    "patterns": [ "неавторизованная заявка" ],
+    "type": "instance",
+    "connections" : [
+      {
+        "target" : "order",
+        "sign" : 1
+      },
+      {
+        "target" : "order_state",
+        "sign" : 1
+      },
+      {
+        "target" : "cancel_unauthorized",
+        "sign" : 1
+      },
+      {
+        "target" : "cancel_undefined",
+        "sign" : -1
+      }
+    ]
+  },
+  {
+    "id": "authorized",
+    "patterns": [ "авторизованная заявка" ],
+    "type": "instance",
+    "connections" : [
+      {
+        "target" : "order",
+        "sign" : 1
+      },
+      {
+        "target" : "order_state",
+        "sign" : 1
+      },
+      {
+        "target" : "cancel_unauthorized",
+        "sign" : 1
+      },
+      {
+        "target" : "cancel_undefined",
+        "sign" : -1
+      }
+    ]
+  },
+  {
+    "id": "order",
+    "patterns": [ "заявка" ],
+    "type": "entity",
+    "connections" : [
+      {
+        "target" : "order_state",
+        "sign" : 1
+      },
+      {
+        "target" : "cancel_undefined",
+        "sign" : 1
+      }
+    ]
+  },
+  {
+    "id": "order_state",
+    "patterns": [ "статус" ],
+    "type": "class",
+    "connections" : [ ]
+  },
+  {
+    "id": "cancel",
+    "patterns": [ "отменить" ],
+    "type": "predicate",
+    "connections" : [
+      {
+        "target" : "cancel_authorized",
+        "sign" : 1
+      },
+      {
+        "target" : "cancel_unauthorized",
+        "sign" : 1
+      },
+      {
+        "target" : "cancel_undefined",
+        "sign" : 1
+      }
+    ]
+  },
+  {
+    "id": "cancel_authorized",
+    "type": "action",
+    "connections" : [
+      {
+        "target" : "cancel_authorized_uri",
+        "sign" : 1
+      }
+    ]
+  },
+  {
+    "id": "cancel_authorized_uri",
+    "type": "uri",
+    "address": "/assets/text/cancel_authorized.txt",
+    "connections" : []
+  },
+  {
+    "id": "cancel_unauthorized",
+    "type": "action",
+    "connections" : [
+      {
+        "target" : "cancel_unauthorized_process",
+        "sign" : 1
+      }
+    ]
+  },
+  {
+    "id": "cancel_unauthorized_process",
+    "type": "process",
+    "connections" : [
+      {
+        "target" : "mark_for_deletion",
+        "sign" : 1
+      },
+      {
+        "target" : "order",
+        "sign" : 1
+      }
+    ]
+  },
+  {
+    "id": "mark_for_deletion",
+    "type": "predicate",
+    "patterns": [ "пометить на удаление" ],
+    "connections" : [ ]
+  },
+  {
+    "id": "cancel_undefined",
+    "type": "clarification",
+    "connections" : [
+      {
+        "target" : "order_state"
+      }
+    ]
+  }
+]

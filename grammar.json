@@ -1,0 +1,30 @@
+[
+  {
+    "id": "match",
+    "patterns": [ "match" ],
+    "type": "noun",
+    "relations" : [ { "strike_against" : "subj" }, { "take_subj" : "subj" } ]
+  },
+  {
+    "id": "match_box",
+    "patterns": [ "match box" ],
+    "relations" : [ { "take_subj" : "subj" } ],
+    "type": "noun"
+  },
+  {
+    "id": "striker",
+    "patterns": [ "striker" ],
+    "type": "noun",
+    "relations": [ { "strike_against" : "aux" } ]
+  },
+  {
+    "id": "strike_against",
+    "orthography": [ "strike [subj] against [aux]" ],
+    "type": "verb"
+  },
+  {
+    "id": "take_subj",
+    "orthography": [ "take [subj]" ],
+    "type": "verb"
+  }
+]

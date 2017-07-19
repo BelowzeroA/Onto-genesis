@@ -1,0 +1,60 @@
+[
+  {
+    "id": "match",
+    "patterns": [ "match" ],
+    "type": "physical object",
+    "connections" : [ "light_match" ]
+  },
+  {
+    "id": "light_match",
+    "patterns": [ "light match" ],
+    "type": "action",
+    "connections" : [ "light_match_how_to_instruction" ]
+  },
+  {
+    "id": "light_match_how_to_instruction",
+    "intents": [ "howto" ],
+    "type": "list",
+    "list_entries" : [ "take_match", "take_match_box", "light_match_process" ]
+  },
+  {
+    "id": "light_match_process",
+    "type": "physical process",
+    "connections" : [ "striker", "match_box", "strike_against", "match" ]
+  },
+  {
+    "id": "take_match",
+    "type": "physical process",
+    "connections" : [ "take_subj", "match" ]
+  },
+  {
+    "id": "light",
+    "patterns": [ "light" ],
+    "type": "abstract action",
+    "connections": [ "light_match" ]
+  },
+  {
+    "id": "match_box",
+    "patterns": [ "match box", "box of matches" ],
+    "type": "physical object",
+    "connections": [ "match", "parts_of_match_box" ]
+  },
+  {
+    "id": "parts_of_match_box",
+    "intents": [ "is_part_of" ],
+    "type": "parts of",
+    "connections": [ "striker" ]
+  },
+  {
+    "id": "striker",
+    "patterns": [ "striker" ],
+    "type": "physical object",
+    "connections": [ "match_box", "part_of" ]
+  },
+  {
+    "id": "strike_against",
+    "patterns": [ "strike against" ],
+    "type": "abstract action",
+    "connections": [ ]
+  }
+]
