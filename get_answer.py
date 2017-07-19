@@ -3,10 +3,10 @@ from clause import Clause
 from onto_resolver import OntoResolver
 
 container = OntoContainer()
-container.load("vardex.json")
+container.load("onto/moneycare.json")
 
 clause = Clause()
-clause.load("sample_query.json")
+clause.load("test/sample_query2.json")
 
 resolver = OntoResolver(container)
 reply = resolver.get_reply(clause)

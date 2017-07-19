@@ -1,31 +1,14 @@
 {
-  "intent": "whether",
-  "predicate": "подходить",
+  "intent": "howto",
+  "predicate": "отменить",
   "type": "interrogation",
   "tree" : [
     { "type" : "VP",
-      "text": "подходят ли",
+      "text": "отменить",
       "leaves" : [
         {
           "type": "NP",
-          "text": "испарители",
-          "leaves": [
-            {
-              "type": "NP",
-              "text": "амор мини",
-              "prep": "для"
-            },
-            {
-              "type": "NP",
-              "text": "мело 2,3",
-              "prep": "от"
-            }
-          ]
-        },
-        {
-          "type": "NP",
-          "text": "Амора плюс",
-          "prep": "для",
+          "text": "заявка",
           "leaves": []
         }
       ]
