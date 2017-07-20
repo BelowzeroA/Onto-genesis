@@ -10,4 +10,5 @@ clause.load("test/sample_query2.json")
 
 resolver = OntoResolver(container)
 reply = resolver.get_reply(clause)
+
 print(reply)
