@@ -15,7 +15,7 @@ class OntoContainer:
         value = clause_part
         if not isinstance(clause_part, str):
             value = clause_part["text"]
-        entries = (entry for entry in self.entries if ("patterns" in entry and value in entry["patterns"]))
+        entries = list(entry for entry in self.entries if ("patterns" in entry and value in entry["patterns"]))
         if len(entries):
             return entries[0]
         return None

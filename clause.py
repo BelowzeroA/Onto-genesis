@@ -11,3 +11,4 @@ class Clause:
             self.raw_content = json.load(data_file)
         self.intent = self.raw_content["intent"]
         self.predicate = self.raw_content["predicate"]
+        self.root_node = self.raw_content["tree"][0]
