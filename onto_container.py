@@ -37,8 +37,9 @@ class OntoContainer:
                 target_node = self.find_node_by_id(conn["target"])
                 if target_node and target_node["type"] == _type:
                     descendants[node_id].add(target_node["id"])
+
         sets = list(descendants.values())
-        intersection = set(sets[0]).intersection(*sets[:1])
+        intersection = set(sets[0]).intersection(*sets[1:])
         if not intersection:
             return []
         else:
