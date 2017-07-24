@@ -37,10 +37,19 @@ class OntoResolver:
     def get_target_nodes(self, source_nodes):
 
         node_weights = {}
-        descendants = set()
+        actions = self.container.find_common_targets_of_type(source_nodes, "action")
+        if not actions:
+            clarifications = self.container.find_common_targets_of_type(source_nodes, "clarification")
+        else:
+            return actions
+        descendants = {}
         for node in source_nodes:
-            for connection in node["connections"]:
-                descendants.append(connection["target"])
+            node_id = node["id"]
+            descendants[node_id] = set()
+            for conn in node["connections"]:
+                target_node = self.container.find_node_by_id(conn["target"])
+                if target_node and target_node["type"] == "action":
+                    descendants[node_id].add(target_node["id"])
         for node in source_nodes:
             for target in descendants:
                 if target in node["connections"]:
