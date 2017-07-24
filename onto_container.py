@@ -20,9 +20,11 @@ class OntoContainer:
             return entries[0]
         return None
 
-    def find_node_by_id(self, id):
+    def find_node_by_id(self, _id):
 
-        entries = list(entry for entry in self.entries if (entry["id"] == id))
+        if isinstance(_id, tuple):
+            _id = _id[0]
+        entries = list(entry for entry in self.entries if (entry["id"] == _id))
         if len(entries):
             return entries[0]
         return None
@@ -33,10 +35,12 @@ class OntoContainer:
         for node in source_nodes:
             node_id = node["id"]
             descendants[node_id] = set()
+            weight = 0
             for conn in node["connections"]:
                 target_node = self.find_node_by_id(conn["target"])
                 if target_node and target_node["type"] == _type:
-                    descendants[node_id].add(target_node["id"])
+                    weight += conn["sign"]
+                    descendants[node_id].add((target_node["id"], weight))
 
         sets = list(descendants.values())
         intersection = set(sets[0]).intersection(*sets[1:])
