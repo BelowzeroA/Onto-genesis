@@ -6,7 +6,7 @@ container = OntoContainer()
 container.load("onto/moneycare.json")
 
 clause = Clause()
-clause.load("test/sample_query2.json")
+clause.load("test/sample_query3.json")
 
 resolver = OntoResolver(container)
 reply = resolver.get_reply(clause)

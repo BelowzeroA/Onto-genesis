@@ -36,7 +36,7 @@
         "sign" : 1
       },
       {
-        "target" : "cancel_unauthorized",
+        "target" : "cancel_authorized",
         "sign" : 1
       },
       {

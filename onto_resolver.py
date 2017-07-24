@@ -33,32 +33,20 @@ class OntoResolver:
             onto_nodes = [self.container.find_node(node["text"]) for node in nps]
             onto_nodes.append(predicate_node)
             search_result = self.get_target_nodes(onto_nodes)
+            node_attrs = max(search_result, key=lambda p: p["weight"])
+            if node_attrs:
+                node = self.container.find_node_by_id(node_attrs["node"])
+                if node["type"] == "clarification":
+                    return node
+                if node["type"] == "action":
+                    return node
 
     def get_target_nodes(self, source_nodes):
 
-        node_weights = {}
         actions = self.container.find_common_targets_of_type(source_nodes, "action")
-        if not actions:
-            clarifications = self.container.find_common_targets_of_type(source_nodes, "clarification")
+        clarifications = self.container.find_common_targets_of_type(source_nodes, "clarification")
+        if not actions and not clarifications:
+            return []
         else:
-            return actions
-        descendants = {}
-        for node in source_nodes:
-            node_id = node["id"]
-            descendants[node_id] = set()
-            for conn in node["connections"]:
-                target_node = self.container.find_node_by_id(conn["target"])
-                if target_node and target_node["type"] == "action":
-                    descendants[node_id].add(target_node["id"])
-        for node in source_nodes:
-            for target in descendants:
-                if target in node["connections"]:
-                    pass
-
-
-
-
-
-
-
-
+            actions += clarifications
+        return actions

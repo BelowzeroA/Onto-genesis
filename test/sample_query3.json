@@ -1,0 +1,18 @@
+{
+  "intent": "howto",
+  "predicate": "отменить",
+  "type": "interrogation",
+  "tree" : [
+    { "type" : "VP",
+      "text": "отменить",
+      "leaves" : [
+        {
+          "type": "NP",
+          "text": "авторизованная заявка",
+          "leaves": []
+        }
+      ]
+    }
+  ]
+}
+
