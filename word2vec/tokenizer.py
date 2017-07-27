@@ -36,12 +36,15 @@ class Tokenizer:
 
     def split_into_words(self, line):
         wordList2 = []
-        wordList1 = line.split()
+        wordList1 = re.split('[-?!,.":; ]', line)
         for word in wordList1:
-            cleanWord = ""
+            """cleanWord = ""
             for char in word:
-                if char in '!,.?":;0123456789':
+                #if char in '-!,.?":;0123456789':
+                #if char in '-!,.?":;':
                     char = ""
-                cleanWord += char
-            wordList2.append(cleanWord)
+                #cleanWord += char
+            """
+            if word != '':
+                wordList2.append(word.strip())
         return wordList2

@@ -8,13 +8,15 @@ from tokenizer import Tokenizer
 tokenizer = Tokenizer()
 words = []
 sentences = []
-with open("sample.txt", 'r', encoding='utf-8') as file:
+with open("sample2.txt", 'r', encoding='utf-8') as file:
     lines = file.read().lower()
     sentences = tokenizer.split_into_sentences(lines)
     for line in sentences:
         words += tokenizer.split_into_words(line)
 
 counts = Counter(words)
+print(counts)
+
 window_size = 3
 
 word_pair_frequences = {}
