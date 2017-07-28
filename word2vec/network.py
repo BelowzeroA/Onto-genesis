@@ -114,3 +114,8 @@ def sigmoid(z):
 def sigmoid_prime(z):
     """Derivative of the sigmoid function."""
     return sigmoid(z) * (1 - sigmoid(z))
+
+
+def softmax(inp):
+    e = np.exp(inp)
+    return e / np.expand_dims(e.sum(axis=1), axis=1)

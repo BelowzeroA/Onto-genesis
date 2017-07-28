@@ -1,7 +1,8 @@
 # import nltk
 from collections import Counter
-from word2vec.tokenizer import Tokenizer
-from word2vec.network import Network
+from tokenizer import Tokenizer
+from network import Network
+from network2 import Network2
 import numpy as np
 
 # nltk.download()
@@ -48,13 +49,37 @@ number = 0
 for key in counts.keys():
     vocabulary_encoded[key] = ++number
 
-a = np.array([1, 0, 3])
-b = np.zeros((3, 4))
-b[np.arange(3), a] = 1
+vector_length = 3
+
+train_samples = np.zeros((vocabulary_len, vocabulary_len))
+column = 0
+for row in train_samples:
+    row[column] = 1
+    column += 1
+
+print(train_samples)
+
+net = Network2((vocabulary_len, vector_length, vocabulary_len))
+xor = [
+    [[-1.0, -1.0], [0]],
+    [[-1.0,  1.0], [1]],
+    [[ 1.0, -1.0], [1]],
+    [[ 1.0,  1.0], [0]] #If I change her to 1 it converges
+]
+
+net.train(xor)
+
+for e in xor:
+    net.forward(e[0])
+    print (net.activation[2])
+"""
+train_samples.fill(0)
+train_samples[np.arange(vector_length), 1] = 1
 
 # print(word_pair_frequences)
 #net = Network([vocabulary_len, 10, vocabulary_len])
-net = Network([3, 2, 3])
+net = Network([vocabulary_len, vector_length, vocabulary_len])
 #data = [(1, 2), (2, 4), (3, 5), (6, 10), (10, 15)]
 data = [([1,0,0], [2,3,4]), ([0,1,0], [2,4,8])]
 net.stochastic_gradient_descent(data, 30, 10, 3.0)
+"""
