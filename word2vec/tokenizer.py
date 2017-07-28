@@ -30,7 +30,7 @@ class Tokenizer:
         text = text.replace("!","!<stop>")
         text = text.replace("<prd>",".")
         sentences = text.split("<stop>")
-        sentences = sentences[:-1]
+        #sentences = sentences[:-1]
         sentences = [s.strip() for s in sentences]
         return sentences
 

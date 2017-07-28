@@ -1,14 +1,17 @@
-#import nltk
+# import nltk
 from collections import Counter
-from tokenizer import Tokenizer
+from word2vec.tokenizer import Tokenizer
+from word2vec.network import Network
+import numpy as np
 
-#nltk.download()
-#tokenizer = nltk.data.load('tokenizers/punkt/english.pickle')
+# nltk.download()
+# tokenizer = nltk.data.load('tokenizers/punkt/english.pickle')
+
 
 tokenizer = Tokenizer()
 words = []
 sentences = []
-with open("sample2.txt", 'r', encoding='utf-8') as file:
+with open("sample3.txt", 'r', encoding='utf-8') as file:
     lines = file.read().lower()
     sentences = tokenizer.split_into_sentences(lines)
     for line in sentences:
@@ -25,7 +28,7 @@ for sent in sentences:
     for word_position in range(len(words)):
         word = words[word_position]
 
-        if not word in word_pair_frequences:
+        if word not in word_pair_frequences:
             word_pair_frequences[word] = []
 
         start_pos = max(0, word_position - window_size)
@@ -39,4 +42,19 @@ for sent in sentences:
 for key in word_pair_frequences.keys():
     word_pair_frequences[key] = Counter(word_pair_frequences[key])
 
-print(word_pair_frequences)
+vocabulary_len = len(counts.keys())
+vocabulary_encoded = {}
+number = 0
+for key in counts.keys():
+    vocabulary_encoded[key] = ++number
+
+a = np.array([1, 0, 3])
+b = np.zeros((3, 4))
+b[np.arange(3), a] = 1
+
+# print(word_pair_frequences)
+#net = Network([vocabulary_len, 10, vocabulary_len])
+net = Network([3, 2, 3])
+#data = [(1, 2), (2, 4), (3, 5), (6, 10), (10, 15)]
+data = [([1,0,0], [2,3,4]), ([0,1,0], [2,4,8])]
+net.stochastic_gradient_descent(data, 30, 10, 3.0)
