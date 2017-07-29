@@ -35,11 +35,13 @@ class Network2:
         #sum of (weights x in)
         self.sumHidden = self.weightsIn.dot(self.activation[0])
         #Ativation of hidden layer
-        self.activation[1] =  np.vstack( ( self.sigmoid(self.sumHidden), np.array([1]) ) )
+        #self.activation[1] =  np.vstack( ( self.sigmoid(self.sumHidden), np.array([1]) ) )
+        self.activation[1] =  np.vstack( ( self.sumHidden, np.array([1]) ) )
         #sum of(out weights x activation of last layer)
         self.sumOut = self.weightsOut.dot(self.activation[1])
         #activation of output
-        self.activation[2] = (self.sigmoid(self.sumOut))
+        #self.activation[2] = (self.sigmoid(self.sumOut))
+        self.activation[2] = (self.softmax(self.sumOut))
         return self.activation[2].T
 
     def backPropagate(self, Y, trainRate = 0.1):
@@ -86,3 +88,8 @@ class Network2:
                 targets = np.array([t[1]])
                 self.forward(inputs)
                 error = error + self.backPropagate(targets, trainRate)
+
+    def softmax(self, x):
+        """Compute softmax values for each sets of scores in x."""
+        e_x = np.exp(x - np.max(x))
+        return e_x / e_x.sum()

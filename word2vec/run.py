@@ -49,7 +49,7 @@ number = 0
 for key in counts.keys():
     vocabulary_encoded[key] = ++number
 
-vector_length = 3
+vector_length = 4
 
 train_samples = np.zeros((vocabulary_len, vocabulary_len))
 column = 0
@@ -60,16 +60,26 @@ for row in train_samples:
 print(train_samples)
 
 net = Network2((vocabulary_len, vector_length, vocabulary_len))
-xor = [
+"""xor = [
     [[-1.0, -1.0], [0]],
     [[-1.0,  1.0], [1]],
     [[ 1.0, -1.0], [1]],
     [[ 1.0,  1.0], [0]] #If I change her to 1 it converges
 ]
+"""
+data = [
+    [[1, 0, 0, 0, 0, 0, 0, 0], [0, 0.8, 0, 0.2, 0, 0, 0, 0]],
+    [[0, 1, 0, 0, 0, 0, 0, 0], [0, 0.2, 0, 0.1, 0.7, 0, 0, 0]],
+    [[0, 0, 1, 0, 0, 0, 0, 0], [0.9, 0, 0, 0, 0, 0, 0.1, 0]],
+    [[0, 0, 0, 1, 0, 0, 0, 0], [0.1, 0, 0, 0, 0, 0.9, 0, 0]],
+    [[0, 0, 0, 0, 1, 0, 0, 0], [0, 0, 0, 0, 0, 0.1, 0.2, 0.7]],
+    [[0, 0, 0, 0, 0, 1, 0, 0], [0, 0.1, 0, 0.8, 0, 0.1, 0, 0]],
+    [[0, 0, 0, 0, 0, 0, 1, 0], [0, 0.1, 0, 0.8, 0, 0.1, 0, 0]],
+    [[0, 0, 0, 0, 0, 0, 0, 1], [0, 0, 0.8, 0, 0.1, 0, 0, 0.1]]
+]
+net.train(data)
 
-net.train(xor)
-
-for e in xor:
+for e in data:
     net.forward(e[0])
     print (net.activation[2])
 """
