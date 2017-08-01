@@ -2,7 +2,7 @@
 from collections import Counter
 from tokenizer import Tokenizer
 from network import Network
-from network2 import Network2
+from skipgram_nn import SkipgramNN
 from neuron import *
 import numpy as np
 
@@ -78,7 +78,8 @@ data = [
     [[0, 0, 0, 0, 0, 0, 1, 0], [0, 0.1, 0, 0.8, 0, 0.1, 0, 0]],
     [[0, 0, 0, 0, 0, 0, 0, 1], [0, 0, 0.8, 0, 0.1, 0, 0, 0.1]]
 ]
-#net.train(data)
+net.train(data)
+print(net.weightOut)
 
 neuron = Neuron(3)
 data = [0, 1, 1.5]
@@ -89,7 +90,7 @@ train_data = [
     [[0, 1, 1.5], 0.6],
     [[2, 0, 1.5], 0.8]]
 
-neuron.train(train_data, 0.1, 1000)
+#neuron.train(train_data, 0.3, 1000)
 output = neuron.feed_forward(data)
 print(output)
 

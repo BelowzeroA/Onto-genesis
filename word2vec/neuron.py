@@ -15,7 +15,7 @@ class Neuron:
                 inputs = np.array(sample[0])
                 target = sample[1]
                 y = self.feed_forward(inputs)
-                error += pow(y - target, 2)
+                error += (y - target) ** 2
                 delta = trainRate * (y - target) * y * (1 - y) * inputs
                 #delta = trainRate * (y - target) * inputs
                 self.weights = self.weights - delta
@@ -28,7 +28,7 @@ class Neuron:
 
     def error(self, input_vector, target):
         value = self.feed_forward(input_vector)
-        return pow(value - target, 2) / 2
+        return (value - target) ** 2 / 2
 
 def sigmoid(z):
     """The sigmoid function."""
