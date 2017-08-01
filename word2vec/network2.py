@@ -85,7 +85,7 @@ class Network2:
             error = 0.0
             for t in target:
                 inputs = np.array(t[0])
-                targets = np.array([t[1]])
+                targets = np.array(t[1])
                 self.forward(inputs)
                 error = error + self.backPropagate(targets, trainRate)
 

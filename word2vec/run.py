@@ -3,6 +3,7 @@ from collections import Counter
 from tokenizer import Tokenizer
 from network import Network
 from network2 import Network2
+from neuron import *
 import numpy as np
 
 # nltk.download()
@@ -57,7 +58,7 @@ for row in train_samples:
     row[column] = 1
     column += 1
 
-print(train_samples)
+#print(train_samples)
 
 net = Network2((vocabulary_len, vector_length, vocabulary_len))
 """xor = [
@@ -77,12 +78,26 @@ data = [
     [[0, 0, 0, 0, 0, 0, 1, 0], [0, 0.1, 0, 0.8, 0, 0.1, 0, 0]],
     [[0, 0, 0, 0, 0, 0, 0, 1], [0, 0, 0.8, 0, 0.1, 0, 0, 0.1]]
 ]
-net.train(data)
+#net.train(data)
 
+neuron = Neuron(3)
+data = [0, 1, 1.6]
+output = neuron.feed_forward(data)
+print(output)
+train_data = [
+    [[1, 0, 2], 0.3],
+    [[0, 1, 1.5], 0.4],
+    [[2, 0, 1.5], 0.8]]
+
+neuron.train(train_data, 0.9, 1000)
+output = neuron.feed_forward(data)
+print(output)
+
+"""
 for e in data:
     net.forward(e[0])
     print (net.activation[2])
-"""
+
 train_samples.fill(0)
 train_samples[np.arange(vector_length), 1] = 1
 
