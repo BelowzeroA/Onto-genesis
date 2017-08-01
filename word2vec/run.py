@@ -81,15 +81,15 @@ data = [
 #net.train(data)
 
 neuron = Neuron(3)
-data = [0, 1, 1.6]
+data = [0, 1, 1.5]
 output = neuron.feed_forward(data)
 print(output)
 train_data = [
     [[1, 0, 2], 0.3],
-    [[0, 1, 1.5], 0.4],
+    [[0, 1, 1.5], 0.6],
     [[2, 0, 1.5], 0.8]]
 
-neuron.train(train_data, 0.9, 1000)
+neuron.train(train_data, 0.1, 1000)
 output = neuron.feed_forward(data)
 print(output)
 

@@ -17,6 +17,7 @@ class Neuron:
                 y = self.feed_forward(inputs)
                 error += pow(y - target, 2)
                 delta = trainRate * (y - target) * y * (1 - y) * inputs
+                #delta = trainRate * (y - target) * inputs
                 self.weights = self.weights - delta
 
             print("epoch ", i + 1, " error = ", error / len(data))
