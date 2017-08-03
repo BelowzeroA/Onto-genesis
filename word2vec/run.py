@@ -60,14 +60,8 @@ for row in train_samples:
 
 #print(train_samples)
 
-net = Network2((vocabulary_len, vector_length, vocabulary_len))
-"""xor = [
-    [[-1.0, -1.0], [0]],
-    [[-1.0,  1.0], [1]],
-    [[ 1.0, -1.0], [1]],
-    [[ 1.0,  1.0], [0]] #If I change her to 1 it converges
-]
-"""
+net = SkipgramNN(vector_length, vocabulary_len)
+
 data = [
     [[1, 0, 0, 0, 0, 0, 0, 0], [0, 0.8, 0, 0.2, 0, 0, 0, 0]],
     [[0, 1, 0, 0, 0, 0, 0, 0], [0, 0.2, 0, 0.1, 0.7, 0, 0, 0]],
@@ -78,8 +72,8 @@ data = [
     [[0, 0, 0, 0, 0, 0, 1, 0], [0, 0.1, 0, 0.8, 0, 0.1, 0, 0]],
     [[0, 0, 0, 0, 0, 0, 0, 1], [0, 0, 0.8, 0, 0.1, 0, 0, 0.1]]
 ]
-net.train(data)
-print(net.weightOut)
+output = net.forward([0,1,0,0,0,0,0,0])
+print(output)
 
 neuron = Neuron(3)
 data = [0, 1, 1.5]

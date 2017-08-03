@@ -11,33 +11,24 @@ class SkipgramNN:
 
         self.vector_size = vector_size
         self.vocab_size = vocab_size
-        for i in range(len(sizeOfLayers)):
+        #for i in range(len(sizeOfLayers)):
             #input layer + bias
-            self.activation.append(sizeOfLayers[i]*[0.0] + [0.0])
+            #self.activation.append(sizeOfLayers[i]*[0.0] + [0.0])
 
         # Wi = len(Hid) x len(IN)+1(bias)
-        self.weightsIn = np.random.uniform(-1,1,(sizeOfLayers[1], sizeOfLayers[0] + 1))
+        self.weights_hidden = np.random.uniform(-1, 1, (vector_size, vocab_size))
 
         # Wo = len(OUT) x len(Hid)
-        self.weightsOut = np.random.uniform(-1,1,(sizeOfLayers[2], sizeOfLayers[1] + 1))
+        self.weights_output = np.random.uniform(-1, 1, (vocab_size, vector_size))
 
     def forward(self, X):
-        '''
-            X: Vetor de entradas
-        '''
-        #In+bias add ativation vector
-        self.activation[0] = np.vstack((np.array([X]).T, np.array([1])))
-        #sum of (weights x in)
-        self.sumHidden = self.weightsIn.dot(self.activation[0])
-        #Ativation of hidden layer
-        #self.activation[1] =  np.vstack( ( self.sigmoid(self.sumHidden), np.array([1]) ) )
-        self.activation[1] =  np.vstack( ( self.sumHidden, np.array([1]) ) )
-        #sum of(out weights x activation of last layer)
-        self.sumOut = self.weightsOut.dot(self.activation[1])
-        #activation of output
-        #self.activation[2] = (self.sigmoid(self.sumOut))
-        self.activation[2] = (self.softmax(self.sumOut))
-        return self.activation[2].T
+
+        #input_matrix = np.vstack((np.array([X]).T, np.array([1])))
+        self.sum_hidden = self.weights_hidden.dot(X)
+        #hidden_output_matrix = np.vstack( (self.sum_hidden, np.array([1]) ) )
+        self.sum_output = self.weights_output.dot(self.sum_hidden)
+        self.output = (self.softmax(self.sum_output))
+        return self.output.T
 
     def backPropagate(self, Y, trainRate = 0.1):
         '''
