@@ -23,12 +23,6 @@ class SkipgramNN:
         return self.output.T
 
     def backPropagate(self, Y, trainRate = 0.1):
-        '''
-            Y: output target
-            trainRate:
-        '''
-        if len(Y) != self.sizeOfLayers[2]:
-            raise ValueError('Wrong number of inputs')
 
         #Calc of output delta
         error_o = Y.T - self.activation[2].T
