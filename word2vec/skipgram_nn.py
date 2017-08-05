@@ -11,19 +11,11 @@ class SkipgramNN:
 
         self.vector_size = vector_size
         self.vocab_size = vocab_size
-        #for i in range(len(sizeOfLayers)):
-            #input layer + bias
-            #self.activation.append(sizeOfLayers[i]*[0.0] + [0.0])
-
-        # Wi = len(Hid) x len(IN)+1(bias)
         self.weights_hidden = np.random.uniform(-1, 1, (vector_size, vocab_size))
-
-        # Wo = len(OUT) x len(Hid)
         self.weights_output = np.random.uniform(-1, 1, (vocab_size, vector_size))
 
     def forward(self, X):
 
-        #input_matrix = np.vstack((np.array([X]).T, np.array([1])))
         self.sum_hidden = self.weights_hidden.dot(X)
         #hidden_output_matrix = np.vstack( (self.sum_hidden, np.array([1]) ) )
         self.sum_output = self.weights_output.dot(self.sum_hidden)
