@@ -25,8 +25,9 @@ class SkipgramNN:
     def backPropagate(self, Y, trainRate = 0.1):
 
         #Calc of output delta
-        error_o = Y.T - self.activation[2].T
-        out_delta = self.sigmoidPrime(self.activation[2]) * error_o.T
+        error_output = Y.T - self.output.T
+        #out_delta = self.sigmoidPrime(self.activation[2]) * error_output.T
+        out_delta = self.sum_hidden * error_output.T
         #Calc of hidden delta
         error_h = out_delta.T.dot(self.weightsOut)
         hiden_delta = self.sigmoidPrime(self.activation[1]) * error_h.T
