@@ -3,6 +3,7 @@ from collections import Counter
 from tokenizer import Tokenizer
 from network import Network
 from skipgram_nn import SkipgramNN
+from softmax_layer import SoftmaxLayer
 from neuron import *
 import numpy as np
 
@@ -74,7 +75,7 @@ data = [
 ]
 output = net.forward([0,1,0,0,0,0,0,0])
 net.train(data, 0.3, 10)
-"""
+
 net = SkipgramNN(2, 3)
 
 data = [
@@ -92,7 +93,19 @@ for i in range(len(data)):
 
 net.train(data, train_samples, train_targets, 0.3, 10)
 print(net.weigths_output)
+"""
+sm = SoftmaxLayer(2, 3)
 
+data = [
+    [[1, 0.3], [0.2, 0.7, 0.1]],
+    [[0.7, 1], [0.9, 0.1, 0]],
+    [[0.9, 0.2], [0.1, 0.1, .8]],
+]
+sm.train(data, 1, 10000)
+input = data[0][0]
+output = sm.feed_forward(input)
+print(output)
+"""
 neuron = Neuron(3)
 data = [0, 1, 1.5]
 output = neuron.feed_forward(data)
@@ -105,7 +118,7 @@ train_data = [
 #neuron.train(train_data, 0.3, 1000)
 output = neuron.feed_forward(data)
 print(output)
-
+"""
 """
 for e in data:
     net.forward(e[0])
