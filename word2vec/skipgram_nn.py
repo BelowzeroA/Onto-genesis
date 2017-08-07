@@ -20,12 +20,16 @@ class SkipgramNN:
         #hidden_output_matrix = np.vstack( (self.sum_hidden, np.array([1]) ) )
         self.sum_output = self.weights_output.dot(self.sum_hidden)
         self.output = (self.softmax(self.sum_output))
-        return self.output.T
+        return self.output
 
     def backPropagate(self, Y, trainRate = 0.1):
 
         #Calc of output delta
-        error_output = Y.T - self.output.T
+        error_output = Y - self.output
+        # softmax gradient
+        for i in range(len(error_output)):
+            err = error_output[i]
+
         #out_delta = self.sigmoidPrime(self.activation[2]) * error_output.T
         out_delta = self.sum_hidden * error_output.T
         #Calc of hidden delta

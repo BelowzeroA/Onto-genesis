@@ -60,7 +60,7 @@ for row in train_samples:
 
 #print(train_samples)
 
-net = SkipgramNN(vector_length, vocabulary_len)
+"""net = SkipgramNN(vector_length, vocabulary_len)
 
 data = [
     [[1, 0, 0, 0, 0, 0, 0, 0], [0, 0.8, 0, 0.2, 0, 0, 0, 0]],
@@ -73,7 +73,17 @@ data = [
     [[0, 0, 0, 0, 0, 0, 0, 1], [0, 0, 0.8, 0, 0.1, 0, 0, 0.1]]
 ]
 output = net.forward([0,1,0,0,0,0,0,0])
-print(output)
+net.train(data, 0.3, 10)
+"""
+net = SkipgramNN(2, 3)
+
+data = [
+    [[1, 0, 0], [0.2, 0.8, 0]],
+    [[0, 1, 0], [0.9, 0.1, 0]],
+    [[0, 0, 1], [0.1, 0.1, .8]],
+]
+net.train(data, 0.3, 10)
+print(net.weigths_output)
 
 neuron = Neuron(3)
 data = [0, 1, 1.5]
