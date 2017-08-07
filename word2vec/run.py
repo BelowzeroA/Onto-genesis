@@ -61,7 +61,7 @@ for row in train_samples:
 
 #print(train_samples)
 
-"""net = SkipgramNN(vector_length, vocabulary_len)
+net = SkipgramNN(vector_length, vocabulary_len)
 
 data = [
     [[1, 0, 0, 0, 0, 0, 0, 0], [0, 0.8, 0, 0.2, 0, 0, 0, 0]],
@@ -75,7 +75,7 @@ data = [
 ]
 output = net.forward([0,1,0,0,0,0,0,0])
 net.train(data, 0.3, 10)
-
+"""
 net = SkipgramNN(2, 3)
 
 data = [
@@ -94,18 +94,18 @@ for i in range(len(data)):
 net.train(data, train_samples, train_targets, 0.3, 10)
 print(net.weigths_output)
 """
-sm = SoftmaxLayer(2, 3)
+"""sm = SoftmaxLayer(2, 3)
 
 data = [
-    [[1, 0.3], [0.2, 0.7, 0.1]],
-    [[0.7, 1], [0.9, 0.1, 0]],
-    [[0.9, 0.2], [0.1, 0.1, .8]],
+    [[0.2, 0.8], [0.2, 0.7, 0.1]],
+    [[0.1, 0.2], [0.9, 0.1, 0]],
+    #[[0.7, 0.2], [0.1, 0.1, .8]],
 ]
-sm.train(data, 1, 10000)
+sm.train(data, 1, 20000)
 input = data[0][0]
 output = sm.feed_forward(input)
-print(output)
-"""
+#print(output)
+
 neuron = Neuron(3)
 data = [0, 1, 1.5]
 output = neuron.feed_forward(data)

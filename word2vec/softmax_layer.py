@@ -10,7 +10,7 @@ class SoftmaxLayer:
         self.weights = np.random.randn(output_size, input_size)
 
     def train(self, data, trainRate = 0.1, num_epochs = 2):
-        for i in range(num_epochs):
+        for epoch in range(num_epochs):
             error_scalar = 0.0
             for sample in data:
                 inputs = np.array(sample[0])
@@ -26,7 +26,10 @@ class SoftmaxLayer:
                 delta = gradients * trainRate
                 self.weights = self.weights + delta
 
-            print("epoch ", i + 1, " error = ", error_scalar)
+            print("epoch ", epoch + 1, " error = ", error_scalar)
+            input = data[1][0]
+            output = self.feed_forward(input)
+            print(output)
 
     def feed_forward(self, input_vector):
         """Return the output of the network if ``a`` is input."""

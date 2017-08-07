@@ -19,19 +19,20 @@ class SkipgramNN:
         self.sum_hidden = self.weights_hidden.dot(X)
         #hidden_output_matrix = np.vstack( (self.sum_hidden, np.array([1]) ) )
         self.sum_output = self.weights_output.dot(self.sum_hidden)
-        self.output = (self.softmax(self.sum_output))
+        self.output = self.softmax(self.sum_output)
         return self.output
 
-    def backPropagate(self, Y, train_samples, train_targets, trainRate = 0.1):
+    def backPropagate(self, Y, trainRate = 0.1):
 
         #Calc of output delta
         error_output = Y - self.output
         # softmax gradient
         # for each class label
-        for label_index in range(self.vocab_size):
-            gradient = np.zeros((self.vector_size))
-            # for each sample in a training set
-            for i in range(len(train_samples)):
+        delta_output = np.zeros((self.vocab_size, self.vector_size))
+        # for each sample in a training set
+        for i in range(self.vector_size):
+            for j in range(self.vocab_size):
+                delta_output[j][i] = self.sum_hidden[i] * error_output[j] * trainRate
                 sum_hidden = self.weights_hidden.dot(train_samples[i])
                 sum_output = self.weights_output.dot(sum_hidden)
                 output = self.softmax(sum_output)
@@ -68,14 +69,14 @@ class SkipgramNN:
     def sigmoidPrime(self, z):
         return self.sigmoid(z)*(1-self.sigmoid(z))
 
-    def train(self, target, train_samples, train_targets, trainRate = 0.5, it = 50000):
+    def train(self, samples, train_samples, train_targets, trainRate = 0.5, it = 50000):
         for i in range(it):
             error = 0.0
-            for t in target:
-                inputs = np.array(t[0])
-                targets = np.array(t[1])
+            for sample in samples:
+                inputs = np.array(sample[0])
+                targets = np.array(sample[1])
                 self.forward(inputs)
-                error = error + self.backPropagate(targets, train_samples, train_targets, trainRate)
+                error = error + self.backPropagate(targets, trainRate)
 
     def softmax(self, x):
         """Compute softmax values for each sets of scores in x."""
