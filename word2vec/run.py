@@ -82,7 +82,15 @@ data = [
     [[0, 1, 0], [0.9, 0.1, 0]],
     [[0, 0, 1], [0.1, 0.1, .8]],
 ]
-net.train(data, 0.3, 10)
+
+train_samples = np.zeros((3, len(data)))
+train_targets = np.zeros((3, len(data)))
+for i in range(len(data)):
+    t = data[i]
+    train_samples[i] = np.array(t[0])
+    train_targets[i] = np.array(t[1])
+
+net.train(data, train_samples, train_targets, 0.3, 10)
 print(net.weigths_output)
 
 neuron = Neuron(3)
