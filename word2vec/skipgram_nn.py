@@ -16,7 +16,8 @@ class SkipgramNN:
 
     def forward(self, X):
 
-        self.sum_hidden = self.weights_hidden.dot(X)
+        #self.sum_hidden = self.sigmoid(self.weights_hidden.dot(X))
+        self.sum_hidden = (self.weights_hidden.dot(X))
         #hidden_output_matrix = np.vstack( (self.sum_hidden, np.array([1]) ) )
         self.sum_output = self.weights_output.dot(self.sum_hidden)
         self.output = self.softmax(self.sum_output)
@@ -27,33 +28,21 @@ class SkipgramNN:
         #Calc of output delta
         error_output = Y - self.output
         # softmax gradient
-        # for each class label
         delta_output = np.zeros((self.vocab_size, self.vector_size))
         # for each sample in a training set
         for i in range(self.vector_size):
             for j in range(self.vocab_size):
                 delta_output[j][i] = self.sum_hidden[i] * error_output[j]
+
+        error_hidden = error_output.T.dot(self.weights_output)
+        delta_hidden = np.zeros((self.vector_size, self.vocab_size))
+        for i in range(self.vocab_size):
+            for j in range(self.vector_size):
+                delta_hidden[j][i] = Y[i] * error_hidden[j]
+
         self.weights_output = self.weights_output + delta_output * trainRate
-
-        #out_delta = self.sigmoidPrime(self.activation[2]) * error_output.T
-        out_delta = self.sum_hidden * error_output.T
-        #Calc of hidden delta
-        error_h = out_delta.T.dot(self.weightsOut)
-        hiden_delta = self.sigmoidPrime(self.activation[1]) * error_h.T
-
-        # update output weights output
-        change_o = self.activation[1] * out_delta.T
-        for i in range(self.sizeOfLayers[2]):
-            for j in range(self.sizeOfLayers[1]):
-                self.weightsOut[i][j] = self.weightsOut[i][j] + trainRate*change_o[j][i]
-        # update Input weights
-        change_h = self.activation[0] * hiden_delta.T
-        for i in range(self.sizeOfLayers[1]):
-            for j in range(self.sizeOfLayers[0]):
-                self.weightsIn[i][j] = self.weightsIn[i][j] + trainRate*change_h[j][i]
-
-        #Error
-        return np.sum((Y.T - self.activation[2].T)**2)*0.5
+        self.weights_hidden = self.weights_hidden + delta_hidden * trainRate
+        return np.sum((error_output) ** 2) * 0.5
 
     def sigmoid(self, z, derv = False):
         if derv == False:
@@ -62,7 +51,7 @@ class SkipgramNN:
     def sigmoidPrime(self, z):
         return self.sigmoid(z)*(1-self.sigmoid(z))
 
-    def train(self, samples, train_samples, train_targets, trainRate = 0.5, it = 50000):
+    def train(self, samples, trainRate = 0.5, it = 50000):
         for i in range(it):
             error = 0.0
             for sample in samples:
@@ -70,6 +59,8 @@ class SkipgramNN:
                 targets = np.array(sample[1])
                 self.forward(inputs)
                 error = error + self.backPropagate(targets, trainRate)
+            if i % 10 == 0:
+                print("epoch ", i, " error = ", error)
 
     def softmax(self, x):
         """Compute softmax values for each sets of scores in x."""

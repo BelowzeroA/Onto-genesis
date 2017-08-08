@@ -1,53 +1,48 @@
 import numpy as np
 import random
 
-class Network2:
+class Network3:
 
     activation = [] #List of values with the values of activation of each layers
     weightsIn = []
     weightsOut = []
 
-    def __init__(self, sizeOfLayers):
-        '''
-            sizeOfLayers: Tuple with numbers of neurons of each layer
-            (in, hidden, out)
-        '''
-        if len(sizeOfLayers) > 3:
-            raise ValueError('Wrong number of layers')
+    def __init__(self, vector_size, vocab_size):
+        self.vector_size = vector_size
+        self.vocab_size = vocab_size
 
-        self.sizeOfLayers = sizeOfLayers
-        for i in range(len(sizeOfLayers)):
-            #input layer + bias
-            self.activation.append(sizeOfLayers[i]*[0.0] + [0.0])
+        # for i in range(len(sizeOfLayers)):
+        #     #input layer + bias
+        #     self.activation.append(sizeOfLayers[i]*[0.0] + [0.0])
 
         # Wi = len(Hid) x len(IN)+1(bias)
-        self.weightsIn = np.random.uniform(-1,1,(sizeOfLayers[1], sizeOfLayers[0] + 1))
+        #self.weightsIn = np.random.uniform(-1,1,(sizeOfLayers[1], sizeOfLayers[0] + 1))
         #self.weightsIn = np.array([[0.34, 0.45, 0.87, 0.99], [0.1, 0.001, 0.19, 0.65, 0.501], [0.19, 0.65, 0.501]])
         #self.weightsIn = np.array([[0.34, 0.45, 0.87, 0.99], [0.1, 0.001, 0.19, 0.65], [ 0.501, 0.19, 0.65, 0.501]])
         #self.weightsIn = np.array([[0.34, -0.45, 0.87, -0.99], [0.1, 0.001, -0.19, 0.65]])
-        self.weightsIn = np.array([[0.34, -0.45, 0.87, 0], [0.1, 0.001, -0.19, 0]])
+        self.weightsIn = np.array([[0.34, -0.45, 0.87], [0.1, 0.001, -0.19]])
 
         # Wo = len(OUT) x len(Hid)
         #self.weightsOut = np.random.uniform(-1,1,(sizeOfLayers[2], sizeOfLayers[1] + 1))
-        self.weightsOut = np.array([[0.34, -0.45, 0], [0.1, 0.19, 0], [0.501, 0.19, 0]])
+        self.weightsOut = np.array([[0.34, -0.45], [0.1, 0.19], [0.501, 0.19]])
 
     def forward(self, X):
         '''
             X: Vetor de entradas
         '''
         #In+bias add ativation vector
-        self.activation[0] = np.vstack((np.array([X]).T, np.array([1])))
+        #self.activation[0] = np.vstack((np.array([X]).T, np.array([1])))
         #sum of (weights x in)
-        self.sumHidden = self.weightsIn.dot(self.activation[0])
+        self.sumHidden = self.weightsIn.dot(X)
         #Ativation of hidden layer
-        self.activation[1] =  np.vstack((self.sigmoid(self.sumHidden), np.array([1])))
-        #self.activation[1] = np.vstack( ( self.sumHidden, np.array([1]) ) )
+        self.activation_hidden = self.sigmoid(self.sumHidden)# np.vstack((self.sigmoid(self.sumHidden), np.array([1])))
+        #self.activation[1] =  np.vstack( ( self.sumHidden, np.array([1]) ) )
         #sum of(out weights x activation of last layer)
-        self.sumOut = self.weightsOut.dot(self.activation[1])
+        self.sumOut = self.weightsOut.dot(self.activation_hidden)
         #activation of output
         #self.activation[2] = (self.sigmoid(self.sumOut))
-        self.activation[2] = self.softmax(self.sumOut)
-        return self.activation[2].T
+        self.activation_output = self.softmax(self.sumOut)
+        return self.activation_output.T
 
     def backPropagate(self, Y, trainRate = 0.1):
         '''
@@ -96,7 +91,7 @@ class Network2:
                 targets = np.array(t[1])
                 self.forward(inputs)
                 error = error + self.backPropagate(targets, trainRate)
-            if i % 100 == 0:
+            if i % 1000 == 0:
                 print("epoch ", i, " error = ", error)
 
     def softmax(self, x):

@@ -1,3 +1,5 @@
 all cats like meat
 all dogs like meat
 humans like milk and meat
+20 kilos of milk is good stuff
+cat ate meat and drunk milk
