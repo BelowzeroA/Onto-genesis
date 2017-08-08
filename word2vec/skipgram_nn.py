@@ -33,8 +33,8 @@ class SkipgramNN:
         for i in range(self.vector_size):
             for j in range(self.vocab_size):
                 delta_output[j][i] = self.sum_hidden[i] * error_output[j] * trainRate
-
-                sum_hidden = self.weights_hidden.dot(train_samples[i])
+        self.weights_output = self.weights_output + delta_output
+                #sum_hidden = self.weights_hidden.dot(train_samples[i])
                 sum_output = self.weights_output.dot(sum_hidden)
                 output = self.softmax(sum_output)
                 error = train_targets[i] - output
