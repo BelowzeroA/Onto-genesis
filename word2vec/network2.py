@@ -21,7 +21,9 @@ class Network2:
             self.activation.append(sizeOfLayers[i]*[0.0] + [0.0])
 
         # Wi = len(Hid) x len(IN)+1(bias)
-        self.weightsIn = np.random.uniform(-1,1,(sizeOfLayers[1], sizeOfLayers[0] + 1))
+        #self.weightsIn = np.random.uniform(-1,1,(sizeOfLayers[1], sizeOfLayers[0] + 1))
+        # self.weightsIn = np.array([[0.34, 0.45, 0.87, 0.99], [0.1, 0.001, 0.19, 0.65, 0.501], [0.19, 0.65, 0.501]])
+        self.weightsIn = np.array([[0.34, 0.45, 0.87, 0.99], [0.1, 0.001, 0.19, 0.65], [ 0.501, 0.19, 0.65, 0.501]])
 
         # Wo = len(OUT) x len(Hid)
         self.weightsOut = np.random.uniform(-1,1,(sizeOfLayers[2], sizeOfLayers[1] + 1))
@@ -40,8 +42,8 @@ class Network2:
         #sum of(out weights x activation of last layer)
         self.sumOut = self.weightsOut.dot(self.activation[1])
         #activation of output
-        #self.activation[2] = (self.sigmoid(self.sumOut))
-        self.activation[2] = (self.softmax(self.sumOut))
+        self.activation[2] = (self.sigmoid(self.sumOut))
+        #self.activation[2] = (self.softmax(self.sumOut))
         return self.activation[2].T
 
     def backPropagate(self, Y, trainRate = 0.1):
@@ -54,7 +56,8 @@ class Network2:
 
         #Calc of output delta
         error_o = Y.T - self.activation[2].T
-        out_delta = self.sigmoidPrime(self.activation[2]) * error_o.T
+        #out_delta = self.sigmoidPrime(self.activation[2]) * error_o.T
+        out_delta = error_o.T
         #Calc of hidden delta
         error_h = out_delta.T.dot(self.weightsOut)
         hiden_delta = self.sigmoidPrime(self.activation[1]) * error_h.T
@@ -80,7 +83,7 @@ class Network2:
     def sigmoidPrime(self, z):
         return self.sigmoid(z)*(1-self.sigmoid(z))
 
-    def train(self, target, trainRate = 0.5, it = 50000):
+    def train(self, target, trainRate = 0.5, it = 1000):
         for i in range(it):
             error = 0.0
             for t in target:
@@ -88,8 +91,10 @@ class Network2:
                 targets = np.array(t[1])
                 self.forward(inputs)
                 error = error + self.backPropagate(targets, trainRate)
+            if i % 1000 == 0:
+                print("epoch ", i + 1, " error = ", error)
 
-    def softmax(self, x):
+    def softmax0(self, x):
         """Compute softmax values for each sets of scores in x."""
         e_x = np.exp(x - np.max(x))
         return e_x / e_x.sum()

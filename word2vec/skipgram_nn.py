@@ -32,16 +32,8 @@ class SkipgramNN:
         # for each sample in a training set
         for i in range(self.vector_size):
             for j in range(self.vocab_size):
-                delta_output[j][i] = self.sum_hidden[i] * error_output[j] * trainRate
-        self.weights_output = self.weights_output + delta_output
-                #sum_hidden = self.weights_hidden.dot(train_samples[i])
-                sum_output = self.weights_output.dot(sum_hidden)
-                output = self.softmax(sum_output)
-                error = train_targets[i] - output
-                # output from the hidden layer from
-                gradient += sum_hidden * error
-            gradient = gradient / self.vocab_size
-            self.weights_output[label_index] -= gradient
+                delta_output[j][i] = self.sum_hidden[i] * error_output[j]
+        self.weights_output = self.weights_output + delta_output * trainRate
 
         #out_delta = self.sigmoidPrime(self.activation[2]) * error_output.T
         out_delta = self.sum_hidden * error_output.T

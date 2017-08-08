@@ -1,7 +1,7 @@
 # import nltk
 from collections import Counter
 from tokenizer import Tokenizer
-from network import Network
+from network2 import Network2
 from skipgram_nn import SkipgramNN
 from softmax_layer import SoftmaxLayer
 from neuron import *
@@ -60,6 +60,18 @@ for row in train_samples:
     column += 1
 
 #print(train_samples)
+net = Network2((3, 2, 3))
+data = [
+    [[1, 0, 0], [0, 0.8, 0.2]],
+    [[0, 1, 0], [0.2, 0.1, 0.7]],
+    [[0, 0, 1], [0.9, 0, 0.1]],
+   # [[1, 0, 1], [0.1, 0.9, 0]],
+]
+net.train(data, 0.5, 10000)
+out = net.forward(data[2][0])
+print(out)
+
+exit()
 
 net = SkipgramNN(vector_length, vocabulary_len)
 
