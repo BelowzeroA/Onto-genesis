@@ -40,8 +40,8 @@ class Network2:
         #sum of (weights x in)
         self.sumHidden = self.weightsIn.dot(self.activation[0])
         #Ativation of hidden layer
-        self.activation[1] =  np.vstack((self.sigmoid(self.sumHidden), np.array([1])))
-        #self.activation[1] = np.vstack( ( self.sumHidden, np.array([1]) ) )
+        #self.activation[1] =  np.vstack((self.sigmoid(self.sumHidden), np.array([1])))
+        self.activation[1] = np.vstack( ( self.sumHidden, np.array([1]) ) )
         #sum of(out weights x activation of last layer)
         self.sumOut = self.weightsOut.dot(self.activation[1])
         #activation of output
@@ -64,8 +64,8 @@ class Network2:
         #Calc of hidden delta
         error_h = out_delta.T.dot(self.weightsOut)
         #error_h = out_delta.dot(self.weightsOut)
-        #hiden_delta = self.sigmoidPrime(self.activation[1]) * error_h.T
-        hiden_delta = self.activation[1] * error_h.T
+        hidden_delta = self.sigmoidPrime(self.activation[1]) * error_h.T
+        #hidden_delta = self.activation[1] * error_h.T
 
         # update output weights output
         change_o = self.activation[1] * out_delta.T
@@ -73,7 +73,7 @@ class Network2:
             for j in range(self.sizeOfLayers[1]):
                 self.weightsOut[i][j] = self.weightsOut[i][j] + trainRate*change_o[j][i]
         # update Input weights
-        change_h = self.activation[0] * hiden_delta.T
+        change_h = self.activation[0] * hidden_delta.T
         for i in range(self.sizeOfLayers[1]):
             for j in range(self.sizeOfLayers[0]):
                 self.weightsIn[i][j] = self.weightsIn[i][j] + trainRate*change_h[j][i]
@@ -96,7 +96,7 @@ class Network2:
                 targets = np.array(t[1])
                 self.forward(inputs)
                 error = error + self.backPropagate(targets, trainRate)
-            if i % 100 == 0:
+            if i % 1000 == 0:
                 print("epoch ", i, " error = ", error)
 
     def softmax(self, x):

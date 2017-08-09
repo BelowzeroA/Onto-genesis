@@ -27,15 +27,11 @@ class Network3:
         self.weightsOut = np.array([[0.34, -0.45], [0.1, 0.19], [0.501, 0.19]])
 
     def forward(self, X):
-        '''
-            X: Vetor de entradas
-        '''
-        #In+bias add ativation vector
         #self.activation[0] = np.vstack((np.array([X]).T, np.array([1])))
         #sum of (weights x in)
         self.sumHidden = self.weightsIn.dot(X)
         #Ativation of hidden layer
-        self.activation_hidden = self.sigmoid(self.sumHidden)# np.vstack((self.sigmoid(self.sumHidden), np.array([1])))
+        self.activation_hidden = self.sumHidden# np.vstack((self.sigmoid(self.sumHidden), np.array([1])))
         #self.activation[1] =  np.vstack( ( self.sumHidden, np.array([1]) ) )
         #sum of(out weights x activation of last layer)
         self.sumOut = self.weightsOut.dot(self.activation_hidden)
@@ -45,33 +41,26 @@ class Network3:
         return self.activation_output.T
 
     def backPropagate(self, Y, trainRate = 0.1):
-        '''
-            Y: output target
-            trainRate:
-        '''
-        if len(Y) != self.sizeOfLayers[2]:
-            raise ValueError('Wrong number of inputs')
 
         #Calc of output delta
-        error_o = Y.T - self.activation[2].T
+        error_o = Y.T - self.activation_output.T
         #out_delta = self.sigmoidPrime(self.activation[2]) * error_o.T
         out_delta = error_o.T
         #Calc of hidden delta
         error_h = out_delta.T.dot(self.weightsOut)
         #error_h = out_delta.dot(self.weightsOut)
-        #hiden_delta = self.sigmoidPrime(self.activation[1]) * error_h.T
-        hiden_delta = self.activation[1] * error_h.T
+        hidden_delta = self.sigmoidPrime(self.activation_hidden) * error_h.T
 
         # update output weights output
-        change_o = self.activation[1] * out_delta.T
-        for i in range(self.sizeOfLayers[2]):
-            for j in range(self.sizeOfLayers[1]):
-                self.weightsOut[i][j] = self.weightsOut[i][j] + trainRate*change_o[j][i]
+        change_o = self.activation_hidden * out_delta.T
+        for i in range(self.vocab_size):
+            for j in range(self.vector_size):
+                self.weightsOut[i][j] = self.weightsOut[i][j] + trainRate * change_o[j][i]
         # update Input weights
-        change_h = self.activation[0] * hiden_delta.T
-        for i in range(self.sizeOfLayers[1]):
-            for j in range(self.sizeOfLayers[0]):
-                self.weightsIn[i][j] = self.weightsIn[i][j] + trainRate*change_h[j][i]
+        change_h = Y * hidden_delta.T
+        for i in range(self.vector_size):
+            for j in range(self.vocab_size):
+                self.weightsIn[i][j] = self.weightsIn[i][j] + trainRate * change_h[j][i]
 
         #Error
         return np.sum((Y.T - self.activation[2].T)**2)*0.5

@@ -16,15 +16,16 @@ class Neuron:
                 target = sample[1]
                 y = self.feed_forward(inputs)
                 error += (y - target) ** 2
-                delta = trainRate * (y - target) * y * (1 - y) * inputs
-                #delta = trainRate * (y - target) * inputs
+                #delta = trainRate * (y - target) * y * (1 - y) * inputs
+                delta = trainRate * (y - target) * inputs
                 self.weights = self.weights - delta
 
             print("epoch ", i + 1, " error = ", error / len(data))
 
     def feed_forward(self, input_vector):
         """Return the output of the network if ``a`` is input."""
-        return sigmoid(np.dot(self.weights, input_vector))
+        # return sigmoid(np.dot(self.weights, input_vector))
+        return np.dot(self.weights, input_vector)
 
     def error(self, input_vector, target):
         value = self.feed_forward(input_vector)

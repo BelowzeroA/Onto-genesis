@@ -4,6 +4,7 @@ from tokenizer import Tokenizer
 from network2 import Network2
 from network3 import Network3
 from skipgram_nn import SkipgramNN
+from neuron import Neuron
 from softmax_layer import SoftmaxLayer
 from neuron import *
 import numpy as np
@@ -11,6 +12,19 @@ import numpy as np
 # nltk.download()
 # tokenizer = nltk.data.load('tokenizers/punkt/english.pickle')
 
+# neuron = Neuron(3)
+# data = [0, 1, 1.4]
+# output = neuron.feed_forward(data)
+# print(output)
+# train_data = [
+#     [[1, 0, 2], 0.3],
+#     [[0, 1, 1.5], 0.6],
+#     [[2, 0, 1.5], 0.8]]
+#
+# neuron.train(train_data, 0.1, 50)
+# output = neuron.feed_forward(data)
+# print(output)
+# exit()
 
 tokenizer = Tokenizer()
 words = []
@@ -62,13 +76,20 @@ for row in train_samples:
 
 #print(train_samples)
 net = Network3(2, 3)
-net = Network2((3, 2, 3))
+net = Network2((4, 2, 4))
 
-net = SkipgramNN(2, 3)
+# net = SkipgramNN(2, 3)
+
 data = [
     [[1, 0, 0], [0, 0.8, 0.2]],
     [[0, 1, 0], [0.2, 0.1, 0.7]],
     [[0, 0, 1], [0.6, 0.3, 0.1]],
+    # [[1, 0, 1], [0.1, 0.9, 0]],
+]
+data = [
+    [[1, 0, 0, 0], [0, 0.8, 0.2, 0]],
+    [[0, 1, 0, 0], [0.2, 0.1, 0.7, 0]],
+    [[0, 0, 1, 0], [0.6, 0.3, 0.1, 0]],
     # [[1, 0, 1], [0.1, 0.9, 0]],
 ]
 
@@ -84,7 +105,7 @@ data = [
 #     [[0, 0, 0, 0, 0, 0, 0, 1], [0, 0, 0.8, 0, 0.1, 0, 0, 0.1]]
 # ]
 
-net.train(data, 0.1, 3200)
+net.train(data, 0.5, 10000)
 out = net.forward(data[0][0])
 print(out)
 # print(net.weightsIn)
