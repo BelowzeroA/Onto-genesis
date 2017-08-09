@@ -1,7 +1,6 @@
 import numpy as np
-import random
 
-class Network2:
+class SkipgramNet:
 
     activation = [] #List of values with the values of activation of each layers
     weightsIn = []
@@ -101,7 +100,7 @@ class Network2:
                 targets = np.array(t[1])
                 self.forward(inputs)
                 error = error + self.backPropagate(targets, trainRate)
-            if i % 1000 == 0:
+            if i % 100 == 0:
                 print("epoch ", i, " error = ", error)
 
     def softmax(self, x):

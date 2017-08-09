@@ -16,15 +16,15 @@ class Network3:
         #     self.activation.append(sizeOfLayers[i]*[0.0] + [0.0])
 
         # Wi = len(Hid) x len(IN)+1(bias)
-        #self.weightsIn = np.random.uniform(-1,1,(sizeOfLayers[1], sizeOfLayers[0] + 1))
+        self.weightsIn = np.random.uniform(-1, 1,(vector_size, vocab_size))
         #self.weightsIn = np.array([[0.34, 0.45, 0.87, 0.99], [0.1, 0.001, 0.19, 0.65, 0.501], [0.19, 0.65, 0.501]])
         #self.weightsIn = np.array([[0.34, 0.45, 0.87, 0.99], [0.1, 0.001, 0.19, 0.65], [ 0.501, 0.19, 0.65, 0.501]])
         #self.weightsIn = np.array([[0.34, -0.45, 0.87, -0.99], [0.1, 0.001, -0.19, 0.65]])
-        self.weightsIn = np.array([[0.34, -0.45, 0.87], [0.1, 0.001, -0.19]])
+        #self.weightsIn = np.array([[0.34, -0.45, 0.87], [0.1, 0.001, -0.19]])
 
         # Wo = len(OUT) x len(Hid)
-        #self.weightsOut = np.random.uniform(-1,1,(sizeOfLayers[2], sizeOfLayers[1] + 1))
-        self.weightsOut = np.array([[0.34, -0.45], [0.1, 0.19], [0.501, 0.19]])
+        self.weightsOut = np.random.uniform(-1,1,(vocab_size, vector_size))
+        #self.weightsOut = np.array([[0.34, -0.45], [0.1, 0.19], [0.501, 0.19]])
 
     def forward(self, X):
         #self.activation[0] = np.vstack((np.array([X]).T, np.array([1])))
@@ -52,18 +52,18 @@ class Network3:
         hidden_delta = self.sigmoidPrime(self.activation_hidden) * error_h.T
 
         # update output weights output
-        change_o = self.activation_hidden * out_delta.T
+        change_o = np.vstack(self.activation_hidden) * out_delta.T
         for i in range(self.vocab_size):
             for j in range(self.vector_size):
                 self.weightsOut[i][j] = self.weightsOut[i][j] + trainRate * change_o[j][i]
         # update Input weights
-        change_h = Y * hidden_delta.T
+        change_h = np.vstack(Y) * hidden_delta.T
         for i in range(self.vector_size):
             for j in range(self.vocab_size):
                 self.weightsIn[i][j] = self.weightsIn[i][j] + trainRate * change_h[j][i]
 
         #Error
-        return np.sum((Y.T - self.activation[2].T)**2)*0.5
+        return np.sum((Y.T - self.activation_output)**2)*0.5
 
     def sigmoid(self, z, derv = False):
         if derv == False:

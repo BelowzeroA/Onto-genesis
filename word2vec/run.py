@@ -3,11 +3,18 @@ from collections import Counter
 from tokenizer import Tokenizer
 from network2 import Network2
 from network3 import Network3
-from skipgram_nn import SkipgramNN
+from skipgram_net import SkipgramNet
 from neuron import Neuron
 from softmax_layer import SoftmaxLayer
 from neuron import *
+from word2vec import Word2Vec
 import numpy as np
+
+
+w2v = Word2Vec(vector_size=8, window_size=3)
+w2v.read_text("sample3.txt")
+w2v.train()
+exit()
 
 # nltk.download()
 # tokenizer = nltk.data.load('tokenizers/punkt/english.pickle')
@@ -26,57 +33,59 @@ import numpy as np
 # print(output)
 # exit()
 
-tokenizer = Tokenizer()
-words = []
-sentences = []
-with open("sample3.txt", 'r', encoding='utf-8') as file:
-    lines = file.read().lower()
-    sentences = tokenizer.split_into_sentences(lines)
-    for line in sentences:
-        words += tokenizer.split_into_words(line)
-
-counts = Counter(words)
-print(counts)
-
-window_size = 3
-
-word_pair_frequences = {}
-for sent in sentences:
-    words = tokenizer.split_into_words(sent)
-    for word_position in range(len(words)):
-        word = words[word_position]
-
-        if word not in word_pair_frequences:
-            word_pair_frequences[word] = []
-
-        start_pos = max(0, word_position - window_size)
-        end_pos = min(len(words) - 1, word_position + window_size)
-        for second_word_position in range(start_pos, end_pos):
-            second_word = words[second_word_position]
-
-            if second_word != word:
-                word_pair_frequences[word].append(second_word)
-
-for key in word_pair_frequences.keys():
-    word_pair_frequences[key] = Counter(word_pair_frequences[key])
-
-vocabulary_len = len(counts.keys())
-vocabulary_encoded = {}
-number = 0
-for key in counts.keys():
-    vocabulary_encoded[key] = ++number
-
-vector_length = 4
-
-train_samples = np.zeros((vocabulary_len, vocabulary_len))
-column = 0
-for row in train_samples:
-    row[column] = 1
-    column += 1
+# tokenizer = Tokenizer()
+# words = []
+# sentences = []
+# with open("sample3.txt", 'r', encoding='utf-8') as file:
+#     lines = file.read().lower()
+#     sentences = tokenizer.split_into_sentences(lines)
+#     for line in sentences:
+#         words += tokenizer.split_into_words(line)
+#
+# counts = Counter(words)
+# print(counts)
+#
+# window_size = 3
+#
+# word_pair_frequences = {}
+# for sent in sentences:
+#     words = tokenizer.split_into_words(sent)
+#     for word_position in range(len(words)):
+#         word = words[word_position]
+#
+#         if word not in word_pair_frequences:
+#             word_pair_frequences[word] = []
+#
+#         start_pos = max(0, word_position - window_size)
+#         end_pos = min(len(words) - 1, word_position + window_size)
+#         for second_word_position in range(start_pos, end_pos):
+#             second_word = words[second_word_position]
+#
+#             if second_word != word:
+#                 word_pair_frequences[word].append(second_word)
+#
+# for key in word_pair_frequences.keys():
+#     word_pair_frequences[key] = Counter(word_pair_frequences[key])
+#
+# vocabulary_len = len(counts.keys())
+# vocabulary_encoded = {}
+# number = 0
+# for key in counts.keys():
+#     vocabulary_encoded[key] = ++number
+#
+# vector_length = 6
+#
+# train_samples = np.zeros((vocabulary_len, vocabulary_len))
+# column = 0
+# for row in train_samples:
+#     row[column] = 1
+#     column += 1
 
 #print(train_samples)
-net = Network3(2, 3)
-net = Network2((4, 2, 4))
+
+
+net = Network3(5, 8)
+net = Network2((8, 5, 8))
 
 # net = SkipgramNN(2, 3)
 
@@ -84,35 +93,35 @@ data = [
     [[1, 0, 0], [0, 0.8, 0.2]],
     [[0, 1, 0], [0.2, 0.1, 0.7]],
     [[0, 0, 1], [0.6, 0.3, 0.1]],
-    # [[1, 0, 1], [0.1, 0.9, 0]],
+    #[[1, 0, 1], [0.1, 0.9, 0]],
 ]
-data = [
-    [[1, 0, 0, 0], [0, 0.8, 0.2, 0]],
+data0 = [
+    [[1, 0, 0, 0], [0, 0.6, 0.2, 0.2]],
     [[0, 1, 0, 0], [0.2, 0.1, 0.7, 0]],
     [[0, 0, 1, 0], [0.6, 0.3, 0.1, 0]],
-    # [[1, 0, 1], [0.1, 0.9, 0]],
+    [[0, 0, 0, 1], [0.1, 0.9, 0, 0]],
 ]
 
 # net = Network2((8, 6, 8))
-# data = [
-#     [[1, 0, 0, 0, 0, 0, 0, 0], [0, 0.8, 0, 0.2, 0, 0, 0, 0]],
-#     [[0, 1, 0, 0, 0, 0, 0, 0], [0, 0.2, 0, 0.1, 0.7, 0, 0, 0]],
-#     [[0, 0, 1, 0, 0, 0, 0, 0], [0.9, 0, 0, 0, 0, 0, 0.1, 0]],
-#     [[0, 0, 0, 1, 0, 0, 0, 0], [0.1, 0, 0, 0, 0, 0.9, 0, 0]],
-#     [[0, 0, 0, 0, 1, 0, 0, 0], [0, 0, 0, 0, 0, 0.1, 0.2, 0.7]],
-#     [[0, 0, 0, 0, 0, 1, 0, 0], [0, 0.1, 0, 0.8, 0, 0.1, 0, 0]],
-#     [[0, 0, 0, 0, 0, 0, 1, 0], [0, 0.1, 0, 0.3, 0.4, 0.2, 0, 0]],
-#     [[0, 0, 0, 0, 0, 0, 0, 1], [0, 0, 0.8, 0, 0.1, 0, 0, 0.1]]
-# ]
+data = [
+    [[1, 0, 0, 0, 0, 0, 0, 0], [0, 0.8, 0, 0.2, 0, 0, 0, 0]],
+    [[0, 1, 0, 0, 0, 0, 0, 0], [0, 0.2, 0, 0.1, 0.7, 0, 0, 0]],
+    [[0, 0, 1, 0, 0, 0, 0, 0], [0.9, 0, 0, 0, 0, 0, 0.1, 0]],
+    [[0, 0, 0, 1, 0, 0, 0, 0], [0.1, 0, 0, 0, 0, 0.9, 0, 0]],
+    [[0, 0, 0, 0, 1, 0, 0, 0], [0, 0, 0, 0, 0, 0.1, 0.2, 0.7]],
+    [[0, 0, 0, 0, 0, 1, 0, 0], [0, 0.1, 0, 0.8, 0, 0.1, 0, 0]],
+    [[0, 0, 0, 0, 0, 0, 1, 0], [0, 0.1, 0, 0.3, 0.4, 0.2, 0, 0]],
+    [[0, 0, 0, 0, 0, 0, 0, 1], [0, 0, 0.8, 0, 0.1, 0, 0, 0.1]]
+]
 
-net.train(data, 0.5, 10000)
+#net.train(data, 0.2, 5000)
 out = net.forward(data[0][0])
 print(out)
 # print(net.weightsIn)
 
-exit()
+#exit()
 
-net = SkipgramNN(vector_length, vocabulary_len)
+net = SkipgramNN(vector_length, 8)
 
 data = [
     [[1, 0, 0, 0, 0, 0, 0, 0], [0, 0.8, 0, 0.2, 0, 0, 0, 0]],
@@ -125,7 +134,7 @@ data = [
     [[0, 0, 0, 0, 0, 0, 0, 1], [0, 0, 0.8, 0, 0.1, 0, 0, 0.1]]
 ]
 output = net.forward([0,1,0,0,0,0,0,0])
-net.train(data, 0.3, 10)
+net.train(data, 0.3, 100)
 """
 net = SkipgramNN(2, 3)
 
