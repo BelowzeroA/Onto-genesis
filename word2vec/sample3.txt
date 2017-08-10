@@ -1,5 +1,9 @@
 all cats like meat
 all dogs like meat
-humans like milk and meat
+cats are animals
+dogs are animals
+humans like to eat milk and meat
+cats live at humans houses
+dogs live at humans houses
 20 kilos of milk is good stuff
 cat ate meat and drunk milk

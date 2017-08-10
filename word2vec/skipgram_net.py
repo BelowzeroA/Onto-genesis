@@ -101,7 +101,9 @@ class SkipgramNet:
                 self.forward(inputs)
                 error = error + self.backPropagate(targets, trainRate)
             if i % 100 == 0:
-                print("epoch ", i, " error = ", error)
+                print("epoch", i, "error =", error)
+
+        return self.weightsIn.T
 
     def softmax(self, x):
         """Compute softmax values for each sets of scores in x."""

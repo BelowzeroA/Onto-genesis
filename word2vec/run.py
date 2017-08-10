@@ -11,78 +11,14 @@ from word2vec import Word2Vec
 import numpy as np
 
 
-w2v = Word2Vec(vector_size=8, window_size=3)
-w2v.read_text("sample3.txt")
-w2v.train()
+w2v = Word2Vec(vector_size=6, window_size=3, minimal_frequency=1)
+#w2v.read_text("sample3.txt")
+#w2v.train(train_rate=0.5, num_epochs=1000)
+w2v.load_model("models/vectors.pkl")
+similars = w2v.get_similar('dogs')
+print(similars)
+w2v.save_model("models/vectors.pkl")
 exit()
-
-# nltk.download()
-# tokenizer = nltk.data.load('tokenizers/punkt/english.pickle')
-
-# neuron = Neuron(3)
-# data = [0, 1, 1.4]
-# output = neuron.feed_forward(data)
-# print(output)
-# train_data = [
-#     [[1, 0, 2], 0.3],
-#     [[0, 1, 1.5], 0.6],
-#     [[2, 0, 1.5], 0.8]]
-#
-# neuron.train(train_data, 0.1, 50)
-# output = neuron.feed_forward(data)
-# print(output)
-# exit()
-
-# tokenizer = Tokenizer()
-# words = []
-# sentences = []
-# with open("sample3.txt", 'r', encoding='utf-8') as file:
-#     lines = file.read().lower()
-#     sentences = tokenizer.split_into_sentences(lines)
-#     for line in sentences:
-#         words += tokenizer.split_into_words(line)
-#
-# counts = Counter(words)
-# print(counts)
-#
-# window_size = 3
-#
-# word_pair_frequences = {}
-# for sent in sentences:
-#     words = tokenizer.split_into_words(sent)
-#     for word_position in range(len(words)):
-#         word = words[word_position]
-#
-#         if word not in word_pair_frequences:
-#             word_pair_frequences[word] = []
-#
-#         start_pos = max(0, word_position - window_size)
-#         end_pos = min(len(words) - 1, word_position + window_size)
-#         for second_word_position in range(start_pos, end_pos):
-#             second_word = words[second_word_position]
-#
-#             if second_word != word:
-#                 word_pair_frequences[word].append(second_word)
-#
-# for key in word_pair_frequences.keys():
-#     word_pair_frequences[key] = Counter(word_pair_frequences[key])
-#
-# vocabulary_len = len(counts.keys())
-# vocabulary_encoded = {}
-# number = 0
-# for key in counts.keys():
-#     vocabulary_encoded[key] = ++number
-#
-# vector_length = 6
-#
-# train_samples = np.zeros((vocabulary_len, vocabulary_len))
-# column = 0
-# for row in train_samples:
-#     row[column] = 1
-#     column += 1
-
-#print(train_samples)
-
 
 net = Network3(5, 8)
 net = Network2((8, 5, 8))

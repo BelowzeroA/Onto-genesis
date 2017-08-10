@@ -32,19 +32,23 @@ class Tokenizer:
         sentences = text.split("<stop>")
         #sentences = sentences[:-1]
         sentences = [s.strip() for s in sentences]
+        sentences = list(filter(lambda sent: sent != '', sentences))
         return sentences
 
     def split_into_words(self, line):
+
+        alfa_numeric = "abcdefghjiklmnopqrstuvwxyzабвгдеёжзиклмнопрстуфхцчшщэюя0123456789"
         wordList2 = []
-        wordList1 = re.split('[-?!,.":; ]', line)
-        for word in wordList1:
-            """cleanWord = ""
-            for char in word:
-                #if char in '-!,.?":;0123456789':
-                #if char in '-!,.?":;':
-                    char = ""
-                #cleanWord += char
-            """
-            if word != '':
-                wordList2.append(word.strip())
+        wordList1 = re.split('/()[-?!,.":; ]', line)
+        current_word = ''
+        for char in line:
+            if char in alfa_numeric or char in alfa_numeric.upper():
+                current_word += char
+            else:
+                if current_word:
+                    wordList2.append(current_word)
+                current_word = ''
+        if current_word:
+            wordList2.append(current_word)
+
         return wordList2
