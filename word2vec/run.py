@@ -8,16 +8,19 @@ from neuron import Neuron
 from softmax_layer import SoftmaxLayer
 from neuron import *
 from word2vec import Word2Vec
+from model_serializer import ModelSerializer
 import numpy as np
 
 
 w2v = Word2Vec(vector_size=6, window_size=3, minimal_frequency=1)
 #w2v.read_text("sample3.txt")
 #w2v.train(train_rate=0.5, num_epochs=1000)
-w2v.load_model("models/vectors.pkl")
-similars = w2v.get_similar('dogs')
+serializer = ModelSerializer("models/vectors.pkl")
+w2v.load_model(serializer)
+similars = w2v.get_similar('cats')
 print(similars)
-w2v.save_model("models/vectors.pkl")
+w2v.save_model(serializer)
+
 exit()
 
 net = Network3(5, 8)

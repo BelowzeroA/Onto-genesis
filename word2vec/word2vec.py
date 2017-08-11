@@ -1,7 +1,6 @@
 from skipgram_net import *
 from collections import Counter
 from tokenizer import Tokenizer
-from model_serializer import ModelSerializer
 import numpy as np
 from numpy.linalg import norm
 from collections import defaultdict
@@ -161,19 +160,16 @@ class Word2Vec:
     def cosine_similarity(self, vec1, vec2):
         return np.dot(vec1, vec2) / (norm(vec1) * norm(vec2))
 
-    def save_model(self, filename):
+    def save_model(self, serializer):
         model = {}
         model["vocabulary"] = self.vocabulary
         model["vocabulary_encoded"] = self.vocabulary_encoded
         model["vectors"] = self.vectors
 
-        serializer = ModelSerializer()
-        serializer.save_model(model, filename)
+        serializer.save_model(model)
 
-
-    def load_model(self, filename):
-        serializer = ModelSerializer()
-        model = serializer.load_model(filename)
+    def load_model(self, serializer):
+        model = serializer.load_model()
         self.vocabulary = model["vocabulary"]
         self.vocabulary_encoded = model["vocabulary_encoded"]
         self.vectors = model["vectors"]

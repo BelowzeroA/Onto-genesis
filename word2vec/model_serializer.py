@@ -2,10 +2,13 @@ import pickle
 
 class ModelSerializer:
 
-    def save_model(self, obj, filename):
-        with open(filename, 'wb') as f:
+    def __init__(self, filename):
+        self.filename = filename
+
+    def save_model(self, obj):
+        with open(self.filename, 'wb') as f:
             pickle.dump(obj, f, pickle.DEFAULT_PROTOCOL)
 
-    def load_model(self, filename):
-        with open(filename, 'rb') as f:
+    def load_model(self):
+        with open(self.filename, 'rb') as f:
             return pickle.load(f)
