@@ -5,6 +5,7 @@ class Clause:
     def __init__(self):
         self.intent = ''
         self.raw_content = {}
+        self.tokens = []
 
     def load(self, filename):
         with open(filename, 'r', encoding='utf-8') as data_file:

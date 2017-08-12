@@ -1,5 +1,5 @@
+from nlp.models.clause import Clause
 from onto_container import OntoContainer
-from clause import Clause
 from onto_resolver import OntoResolver
 
 container = OntoContainer()

@@ -1,7 +1,3 @@
-from onto_container import OntoContainer
-from clause import Clause
-
-
 class OntoResolver:
     def __init__(self, container):
         self.container = container

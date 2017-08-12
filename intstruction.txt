@@ -22,6 +22,17 @@ pleant the swalt against the hulster dotch of the gibble
 чтобы [пеленить] [стогную бамуку], [шереньте ее на молание]
 если вы [не грапели] [реконуть] [бамуку], ее нужно [пондрить и чвыфнуть на монзую реконацию]
 
+какие бывают бамуки?
+можно ли пеленить реконутую бамуку?
+кроп реконул бамуку, как ее пеленить?
+как пеленить бамуку?
+не грапела бамуку вчера, как ее реконуть?
+
+1) extracting predicate and mark-words as features
+2) sentence classification, fixed set of categories
+3) extracting ontology entities from a sentence
+4) building ontology connections using genetic algorithms
+
 something has properties
 whether
 how to
