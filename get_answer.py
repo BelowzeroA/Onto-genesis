@@ -1,4 +1,4 @@
-from nlp.models.clause import Clause
+from nlp import Clause
 from onto_container import OntoContainer
 from onto_resolver import OntoResolver
 

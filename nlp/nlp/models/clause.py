@@ -2,10 +2,11 @@ import json
 
 
 class Clause:
-    def __init__(self):
+    def __init__(self, source):
         self.intent = ''
         self.raw_content = {}
         self.tokens = []
+        self.source = source
 
     def load(self, filename):
         with open(filename, 'r', encoding='utf-8') as data_file:
