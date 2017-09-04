@@ -1,19 +1,22 @@
 import json
 from urllib.request import Request, urlopen
-import config
+import nlp
 
 class CleveriseApi:
+
+    def __init__(self):
+        self.server_addr = "http://api.itsgreat.ru/"
 
     def get_clause_parsed(self):
         self.server_addr = "http://api.itsgreat.ru/"
 
     def compose_url(self, method):
-        return self.server_addr + method + "?token=" + config.cleverise_token
+        return self.server_addr + method + "?token=" + nlp.config.cleverise_token
 
-    def cleverise_command(self, method, msg_text):
+    def cleverise_command(self, method, text):
         try:
             url = self.compose_url(method)
-            binary_data = msg_text.encode('utf-8')
+            binary_data = text.encode('utf-8')
             request = Request(url, data=binary_data)
             raw_response = urlopen(request).read()
             return json.loads(raw_response.decode())
