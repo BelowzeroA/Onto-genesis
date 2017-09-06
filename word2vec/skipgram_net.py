@@ -19,25 +19,10 @@ class SkipgramNet:
             #input layer + bias
             self.activation.append(sizeOfLayers[i]*[0.0] + [0.0])
 
-        # Wi = len(Hid) x len(IN)+1(bias)
-
-        #self.weightsIn = np.array([[0.34, 0.45, 0.87, 0.99], [0.1, 0.001, 0.19, 0.65, 0.501], [0.19, 0.65, 0.501]])
-        #self.weightsIn = np.array([[0.34, 0.45, 0.87, 0.99], [0.1, 0.001, 0.19, 0.65], [ 0.501, 0.19, 0.65, 0.501]])
-        #self.weightsIn = np.array([[0.34, -0.45, 0.87, -0.99], [0.1, 0.001, -0.19, 0.65]])
-        self.weightsIn = np.array([[0.34, -0.45, 0.87, 0], [0.1, 0.001, -0.19, 0]])
-        self.weightsIn = np.array([[0.34, -0.45, 0.87, 0.3, 0], [0.1, 0.001, -0.19, -0.3, 0]])
         self.weightsIn = np.random.uniform(-1, 1, (sizeOfLayers[1], sizeOfLayers[0] + 1))
-
-        # Wo = len(OUT) x len(Hid)
-        #
-        self.weightsOut = np.array([[0.34, -0.45, 0], [0.1, 0.19, 0], [0.501, 0.19, 0]])
-        self.weightsOut = np.array([[0.34, -0.45, -0.3], [0, 0.1, 0.19], [0.9, 0, 0.501], [0.19, -0.7, 0]])
         self.weightsOut = np.random.uniform(-1, 1, (sizeOfLayers[2], sizeOfLayers[1] + 1))
 
     def forward(self, X):
-        '''
-            X: Vetor de entradas
-        '''
         #In+bias add ativation vector
         self.activation[0] = np.vstack((np.array([X]).T, np.array([0])))
         #self.activation[0] = np.vstack(np.array([X]).T)
