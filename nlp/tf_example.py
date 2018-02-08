@@ -76,14 +76,14 @@ def main():
 
     # Backward propagation
     cost    = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(labels=y, logits=yhat))
-    updates = tf.train.GradientDescentOptimizer(0.01).minimize(cost)
+    updates = tf.train.GradientDescentOptimizer(0.02).minimize(cost)
 
     # Run SGD
     sess = tf.Session()
     init = tf.global_variables_initializer()
     sess.run(init)
 
-    for epoch in range(10):
+    for epoch in range(20):
         # Train with each example
         for i in range(len(train_X)):
             result = sess.run(updates, feed_dict={X: train_X[i: i + 1], y: train_y[i: i + 1]})
@@ -96,7 +96,7 @@ def main():
     weights1 = w_1.eval(sess)
     weights2 = w_2.eval(sess)
     output = tf.nn.softmax(yhat)
-    result = sess.run(output, feed_dict={X: train_X, w_1: weights1, w_2: weights2})
+    result = sess.run(output, feed_dict={X: train_X[0:1], w_1: weights1, w_2: weights2})
     print(result)
     sess.close()
     # print(weights)
