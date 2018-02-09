@@ -57,7 +57,6 @@ class FeedforwardNetwork:
         """
         previous_layer = X
         for i, weights in enumerate(weights_array):
-
             if i == len(weights_array) - 1:
                 layer = tf.matmul(previous_layer, weights)  # The \varphi function
             else:
