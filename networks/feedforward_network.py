@@ -8,6 +8,7 @@ class FeedforwardNetwork:
         self.input_size = input_size
         self.output_size = output_size
         self.hidden_sizes = hidden_sizes
+        self.session = None
 
 
     def _prepare_input_data(self, data):
@@ -84,16 +85,17 @@ class FeedforwardNetwork:
         updates = tf.train.GradientDescentOptimizer(0.02).minimize(cost)
 
         # Run SGD
-        sess = tf.Session()
+        self.session = tf.Session()
         init = tf.global_variables_initializer()
-        sess.run(init)
+        self.session.run(init)
 
         for epoch in range(number_of_epochs):
             # Train with each example
             for i in range(len(Xdata)):
-                result = sess.run(updates, feed_dict={X: Xdata[i: i + 1], y: Ydata[i: i + 1]})
+                result = self.session.run(updates, feed_dict={X: Xdata[i: i + 1], y: Ydata[i: i + 1]})
 
     def save_model(self, filename):
-        pass
+        saver = tf.train.Saver()
+        saver.save(self.session, filename)
 
 
