@@ -55,11 +55,8 @@ class FeedforwardNetwork:
         Forward-propagation.
         IMPORTANT: yhat is not softmax since TensorFlow's softmax_cross_entropy_with_logits() does that internally.
         """
-        previous_layer = None
+        previous_layer = X
         for i, weights in enumerate(weights_array):
-            if i == 0:
-                previous_layer = X
-
             if i == len(weights_array) - 1:
                 layer = tf.matmul(previous_layer, weights)  # The \varphi function
             else:
