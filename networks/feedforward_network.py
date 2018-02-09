@@ -93,4 +93,7 @@ class FeedforwardNetwork:
             for i in range(len(Xdata)):
                 result = sess.run(updates, feed_dict={X: Xdata[i: i + 1], y: Ydata[i: i + 1]})
 
+    def save_model(self, filename):
+        pass
+
 
