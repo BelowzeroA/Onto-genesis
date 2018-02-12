@@ -9,6 +9,10 @@ class FeedforwardNetwork:
         self.output_size = output_size
         self.hidden_sizes = hidden_sizes
         self.session = None
+        self.yhat = None
+        self.y = None
+        self.placeholderX = None
+        self.session = tf.Session()
 
 
     def _prepare_input_data(self, data):
@@ -66,36 +70,56 @@ class FeedforwardNetwork:
         return layer
 
 
-    def fit(self, dataset, number_of_epochs=20):
-
-        Xdata = self._prepare_input_data(dataset)
-        Ydata = self._prepare_output_data(dataset)
-
-        X = tf.placeholder("float", shape=(None, self.input_size + 1))
-        y = tf.placeholder("float", shape=[None, self.output_size])
+    def init_base_variables(self):
+        self.placeholderX = tf.placeholder("float", shape=(None, self.input_size + 1))
+        self.y = tf.placeholder("float", shape=[None, self.output_size])
 
         weights_array = self._init_weights_array()
 
         # Forward propagation
-        yhat = self.forwardprop(X, weights_array)
-        predict = tf.argmax(yhat, axis=1)
+        self.yhat = self.forwardprop(self.placeholderX, weights_array)
+
+
+    def fit(self, dataset, number_of_epochs=20):
+        Xdata = self._prepare_input_data(dataset)
+        Ydata = self._prepare_output_data(dataset)
+
+        self.init_base_variables()
 
         # Backward propagation
-        cost = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(labels=y, logits=yhat))
+        cost = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(labels=self.y, logits=self.yhat))
         updates = tf.train.GradientDescentOptimizer(0.02).minimize(cost)
 
         # Run SGD
-        self.session = tf.Session()
         init = tf.global_variables_initializer()
         self.session.run(init)
 
         for epoch in range(number_of_epochs):
             # Train with each example
             for i in range(len(Xdata)):
-                result = self.session.run(updates, feed_dict={X: Xdata[i: i + 1], y: Ydata[i: i + 1]})
+                result = self.session.run(updates, feed_dict={self.placeholderX: Xdata[i: i + 1], y: Ydata[i: i + 1]})
 
-    def save_model(self, filename):
+
+    def predict(self, dataset):
+        self.init_base_variables()
+        predict = tf.argmax(self.yhat, axis=1)
+        # output = tf.nn.softmax(yhat)
+        Xdata = self._prepare_input_data(dataset)
+        result = self.session.run(predict, feed_dict={self.placeholderX: Xdata})
+        return result
+
+
+    def save_model(self, save_path, model_name):
+        if not save_path[-1:] in ['\\', '/']:
+            save_path += '/'
         saver = tf.train.Saver()
-        saver.save(self.session, filename)
+        saver.save(self.session, save_path + model_name)
+
+
+    def load_model(self, save_path, model_name):
+        if not save_path[-1:] in ['\\', '/']:
+            save_path += '/'
+        saver = tf.train.import_meta_graph(save_path + model_name + '.meta')
+        saver.restore(self.session, tf.train.latest_checkpoint(save_path))
 
 

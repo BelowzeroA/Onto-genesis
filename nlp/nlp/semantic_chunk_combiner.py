@@ -31,6 +31,9 @@ def is_genitive(token):
 def is_punct(token):
     return 'PUNCT' in token.forms[0].grammemes
 
+def is_quote(token):
+    return 'QUOTE' in token.forms[0].grammemes
+
 
 feature_func_patterns = {
     'is_noun': lambda token: is_noun(token),
@@ -45,30 +48,36 @@ feature_func_patterns = {
 
 class SemanticChunkCombiner:
 
-    def __init__(self):
+    def __init__(self, ):
         self.execution_timer = Timer()
+        self.environment_features = {'punct_between': 0, 'preposition_between': 0, 'preposition_before': 0}
+        self.feature_vector_size = len(feature_func_patterns) * 2 + len(self.environment_features)
+        self.network = FeedforwardNetwork(self.feature_vector_size, 2, (20, 20))
+        self.tokenizer = Tokenizer()
 
     def generate_dataset(self, samples):
         dataset = []
-        tokenizer = Tokenizer()
 
         for sample in samples:
-            self.populate_dataset_from_sample(sample, dataset, tokenizer)
+            self.populate_dataset_from_sample(sample, dataset)
 
         return dataset
 
 
-    def populate_dataset_from_sample(self, sample, dataset, tokenizer):
+    def populate_dataset_from_sample(self, sample, dataset, for_train=True):
 
         ground_truth = False
-        raw_tokens = tokenizer(sample)
+        raw_tokens = self.tokenizer(sample)
         prev_token = None
-        environment_features = {'punct_between': 0, 'preposition_between': 0, 'preposition_before': 0}
+
         for token in raw_tokens:
 
             token.chunked = False
             if token.value == '[':
                 ground_truth = True
+                continue
+
+            if is_quote(token):
                 continue
 
             if not prev_token:
@@ -77,24 +86,24 @@ class SemanticChunkCombiner:
 
             if is_preposition(prev_token) or is_preposition(token):
                 if is_preposition(token):
-                    environment_features['preposition_between'] = 1
+                    self.environment_features['preposition_between'] = 1
                 if is_preposition(token):
-                    environment_features['preposition_before'] = 1
+                    self.environment_features['preposition_before'] = 1
                 prev_token = token
                 continue
 
             if is_punct(token):
-                environment_features['punct_between'] = 1
+                self.environment_features['punct_between'] = 1
                 continue
 
             if token.value == ']':
                 ground_truth = False
-                for ft in environment_features:
-                    environment_features[ft] = 0
+                for ft in self.environment_features:
+                    self.environment_features[ft] = 0
                 continue
 
             if not ground_truth:
-                environment_features['preposition_before'] = 0
+                self.environment_features['preposition_before'] = 0
 
             token.chunked = ground_truth
 
@@ -102,8 +111,11 @@ class SemanticChunkCombiner:
                 label = 1 if ground_truth else 0
             else:
                 label = 0
-            feature_vector = self._compute_features2(prev_token, token, environment_features)
-            dataset.append((feature_vector, label))
+            feature_vector = self._compute_features2(prev_token, token, self.environment_features)
+            if for_train:
+                dataset.append((feature_vector, label))
+            else:
+                dataset.append(feature_vector)
 
             prev_token = token
 
@@ -122,9 +134,8 @@ class SemanticChunkCombiner:
 
 
     def fit(self, dataset, number_of_epochs, verbose=False):
-        feature_vector_size = dataset[0][0].shape[0]
-        network = FeedforwardNetwork(feature_vector_size, 2, (20, 20))
-        network.fit(dataset, number_of_epochs=number_of_epochs)
+        # feature_vector_size = dataset[0][0].shape[0]
+        self.network.fit(dataset, number_of_epochs=number_of_epochs)
 
 
     def _compute_features2(self, token1, token2, environment_features):
@@ -137,3 +148,17 @@ class SemanticChunkCombiner:
             features.extend([feature_value_1, feature_value_2])
 
         return np.array(features)
+
+
+    def predict(self, sample):
+        dataset = []
+        self.populate_dataset_from_sample(sample=sample, dataset=dataset, for_train=False)
+        return self.network.predict(dataset)
+
+
+    def save_model(self, save_path, model_name):
+        self.network.save_model(save_path, model_name)
+
+
+    def load_model(self, load_path, model_name):
+        self.network.load_model(load_path, model_name)
