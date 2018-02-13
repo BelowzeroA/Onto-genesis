@@ -20,7 +20,10 @@ class FeedforwardNetwork:
         number_of_samples = len(data)
         X = np.ones((number_of_samples, self.input_size + 1))
         for i, sample in enumerate(data):
-            X[i, 1:] = sample[0]
+            if isinstance(sample, tuple):
+                X[i, 1:] = sample[0]
+            else:
+                X[i, 1:] = sample
         return X
 
 
@@ -63,7 +66,7 @@ class FeedforwardNetwork:
         previous_layer = X
         for i, weights in enumerate(weights_array):
             if i == len(weights_array) - 1:
-                layer = tf.matmul(previous_layer, weights)  # The \varphi function
+                layer = tf.matmul(previous_layer, weights, name='output')  # The \varphi function
             else:
                 layer = tf.nn.sigmoid(tf.matmul(previous_layer, weights))
             previous_layer = layer
@@ -97,15 +100,21 @@ class FeedforwardNetwork:
         for epoch in range(number_of_epochs):
             # Train with each example
             for i in range(len(Xdata)):
-                result = self.session.run(updates, feed_dict={self.placeholderX: Xdata[i: i + 1], y: Ydata[i: i + 1]})
+                result = self.session.run(updates, feed_dict={self.placeholderX: Xdata[i: i + 1], self.y: Ydata[i: i + 1]})
 
 
     def predict(self, dataset):
-        self.init_base_variables()
-        predict = tf.argmax(self.yhat, axis=1)
-        # output = tf.nn.softmax(yhat)
+        # self.placeholderX = tf.placeholder("float", shape=(None, self.input_size + 1), name='input')
+        # predict = tf.argmax(self.yhat, axis=1)
+        init = tf.global_variables_initializer()
+        self.session.run(init)
+
+        # output_layer = tf.get_default_graph().get_operation_by_name(name='output')
+        output_layer = tf.get_default_graph().get_tensor_by_name('output:0')
+        output = tf.nn.softmax(self.yhat)
         Xdata = self._prepare_input_data(dataset)
-        result = self.session.run(predict, feed_dict={self.placeholderX: Xdata})
+
+        result = self.session.run(output, feed_dict={self.placeholderX: Xdata})
         return result
 
 
@@ -120,6 +129,8 @@ class FeedforwardNetwork:
         if not save_path[-1:] in ['\\', '/']:
             save_path += '/'
         saver = tf.train.import_meta_graph(save_path + model_name + '.meta')
+        # saver = tf.train.Saver()
         saver.restore(self.session, tf.train.latest_checkpoint(save_path))
+        # saver.restore(self.session, save_path)
 
 

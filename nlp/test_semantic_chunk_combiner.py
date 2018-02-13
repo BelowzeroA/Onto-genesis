@@ -12,13 +12,15 @@ def main():
                '[Механическое управление] это [поворотные переключатели], с помощью которых устанавливают [время приготовления] и температуру. ']
     test_sample = 'Функция «мультиповар» позволяет задавать температуру и время приготовления вручную прямо в процессе приготовления'
     combiner = SemanticChunkCombiner()
-    train = False
+    train = True
     modelname = 'sch'
 
     if train:
         # samples = load_list_from_file(DATASET_FILE_NAME)
         combiner.train(samples, rand_seed=2, number_of_epochs=5)
         combiner.save_model(MODEL_PATH, modelname)
+        prediction = combiner.predict(test_sample)
+        print(prediction)
     else:
         combiner.load_model(MODEL_PATH, modelname)
         prediction = combiner.predict(test_sample)
