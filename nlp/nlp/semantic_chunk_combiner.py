@@ -34,6 +34,9 @@ def is_punct(token):
 def is_quote(token):
     return 'QUOTE' in token.forms[0].grammemes
 
+def is_conjunction(token):
+    return 'CONJ' in token.forms[0].grammemes
+
 
 feature_func_patterns = {
     'is_noun': lambda token: is_noun(token),
@@ -48,12 +51,14 @@ feature_func_patterns = {
 
 class SemanticChunkCombiner:
 
-    def __init__(self, ):
+    def __init__(self, rand_seed=42):
         self.execution_timer = Timer()
-        self.environment_features = {'punct_between': 0, 'preposition_between': 0, 'preposition_before': 0}
+        self.environment_features = {'punct_between': 0, 'preposition_between': 0,
+                                     'preposition_before': 0, 'conjunction_between': 0}
         self.feature_vector_size = len(feature_func_patterns) * 2 + len(self.environment_features)
-        self.network = FeedforwardNetwork(self.feature_vector_size, 2, (20, 20))
+        self.network = FeedforwardNetwork(self.feature_vector_size, 2, (200, 50, 5), rand_seed=rand_seed)
         self.tokenizer = Tokenizer()
+
 
     def generate_dataset(self, samples):
         dataset = []
@@ -90,6 +95,10 @@ class SemanticChunkCombiner:
                 if is_preposition(token):
                     self.environment_features['preposition_before'] = 1
                 prev_token = token
+                continue
+
+            if is_conjunction(token):
+                self.environment_features['conjunction_between'] = 1
                 continue
 
             if is_punct(token):

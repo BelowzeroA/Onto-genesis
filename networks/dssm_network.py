@@ -2,7 +2,7 @@ import numpy as np
 import tensorflow as tf
 
 
-class FeedforwardNetwork:
+class DssmNetwork:
 
     def __init__(self, input_size, output_size, hidden_sizes, rand_seed=42):
         self.input_size = input_size
@@ -17,9 +17,7 @@ class FeedforwardNetwork:
 
 
     def _prepare_input_data(self, data):
-        # Prepend the column of 1s for bias
         number_of_samples = len(data)
-        # X = np.ones((number_of_samples, self.input_size + 1))
         X = np.zeros((number_of_samples, self.input_size))
         for i, sample in enumerate(data):
             if isinstance(sample, tuple):
@@ -93,7 +91,9 @@ class FeedforwardNetwork:
         biases_array = self._init_biases()
 
         # Forward propagation
-        self.yhat = self.forwardprop(self.placeholderX, weights_array, biases_array)
+        self.final_vector1 = self.forwardprop(self.placeholderX, weights_array, biases_array)
+        self.final_vector2 = self.forwardprop(self.placeholderX, weights_array, biases_array)
+        # self.cosine = tf.losses.cosine_distance(self.final_vector1, self.final_vector2)
 
 
     def fit(self, dataset, number_of_epochs=20):
@@ -103,11 +103,13 @@ class FeedforwardNetwork:
         self.init_base_variables()
 
         # Backward propagation
-        cost = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(labels=self.y, logits=self.yhat))
-        updates = tf.train.GradientDescentOptimizer(0.01).minimize(cost)
+        # cost = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(labels=self.y, logits=self.yhat))
+        # self.cost = tf.losses.cosine_distance(self.final_vector1, self.final_vector2, dim=1)
+        self.cost = tf.reduce_sum(tf.multiply(self.final_vector1, self.final_vector2))
+        updates = tf.train.GradientDescentOptimizer(0.01).minimize(self.cost)
         # updates = tf.train.AdamOptimizer(0.01).minimize(cost)
 
-        predict = tf.argmax(self.yhat, axis=1)
+        # predict = tf.argmax(self.yhat, axis=1)
 
         # Run SGD
         init = tf.global_variables_initializer()
@@ -118,16 +120,11 @@ class FeedforwardNetwork:
             for i in range(len(Xdata)):
                 result = self.session.run(updates, feed_dict={self.placeholderX: Xdata[i: i + 1],
                                                               self.y: Ydata[i: i + 1]})
-            train_accuracy = np.mean(np.argmax(Ydata, axis=1) == self.session.run(predict,
-                feed_dict={self.placeholderX: Xdata, self.y: Ydata}))
-            # test_accuracy = np.mean(
-            #     np.argmax(test_y, axis=1) == sess.run(predict, feed_dict={X: test_X, y: test_y}))
-
-            if epoch % 10 == 0:
-                # print("Epoch = %d, train accuracy = %.2f%%, test accuracy = %.2f%%"
-                print("Epoch = %d, train accuracy = %.2f%%"
-                 # % (epoch + 1, 100. * train_accuracy, 100. * test_accuracy))
-                    % (epoch + 1, 100. * train_accuracy))
+            # train_accuracy = np.mean(np.argmax(Ydata, axis=1) == self.session.run(predict,
+            #     feed_dict={self.placeholderX: Xdata, self.y: Ydata}))
+            #
+            # if epoch % 10 == 0:
+            #     print("Epoch = %d, train accuracy = %.2f%%"  % (epoch + 1, 100. * train_accuracy))
 
 
     def predict(self, dataset):
@@ -156,8 +153,4 @@ class FeedforwardNetwork:
         if not save_path[-1:] in ['\\', '/']:
             save_path += '/'
         saver = tf.train.import_meta_graph(save_path + model_name + '.meta')
-        # saver = tf.train.Saver()
         saver.restore(self.session, tf.train.latest_checkpoint(save_path))
-        # saver.restore(self.session, save_path)
-
-
