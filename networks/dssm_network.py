@@ -28,10 +28,7 @@ class DssmNetwork:
 
 
     def _prepare_output_data(self, data):
-        vector = [sample[1] for sample in data]
-        # Convert into one-hot vectors
-        num_labels = len(np.unique(vector))
-        Y = np.eye(num_labels)[vector]  # One liner trick!
+        Y = np.array([sample[1] for sample in data])
         return Y
 
 
