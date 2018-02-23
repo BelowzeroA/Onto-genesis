@@ -31,6 +31,7 @@ def main():
     p2 = Point(100, 200)
 
     circle1 = Circle(center=p1, radius=5)
+    circle1.setFill('black')
     circle1.draw(win)
 
     circle2 = Circle(center=p2, radius=5)
