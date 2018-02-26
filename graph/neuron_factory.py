@@ -1,4 +1,4 @@
-from graph.neuron import Neuron
+from graph.neuron import Neuron, random
 
 
 class NeuronFactory:

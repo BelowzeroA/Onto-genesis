@@ -9,15 +9,23 @@ class Connection:
         self.pulsing = False
         self.weight = brain.default_weight
         self.brain = brain
+        self.inhibitory = False
 
 
     def update(self):
         if self.pulsing:
-            self.target.potential += self.weight
+            sign = -1 if self.inhibitory else 1
+            self.target.potential += sign * self.weight
+            if self.target.potential < 0:
+                self.target.potential = 0
+
             # self.pulsing = False
 
+    def _repr(self):
+        return '[{}-{} weight: {}]'.format(self.source.inner_id, self.target.inner_id, self.weight)
+
     def __repr__(self):
-        return '{} - {}'.format(self.source.inner_id, self.target.inner_id)
+        return self._repr()
 
     def __str__(self):
-        return '{} - {}'.format(self.source.inner_id, self.target.inner_id)
+        return self._repr()

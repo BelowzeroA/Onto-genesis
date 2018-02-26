@@ -11,19 +11,32 @@ class GraphicNeuron(Neuron):
         super(GraphicNeuron, self).__init__(inner_id, brain)
         self.location = location
         self.prev_firing = False
+        self.was_fired = 0
 
     def update(self):
         super(GraphicNeuron, self).update()
+        if self.firing:
+            self.was_fired += 5
         if self.prev_firing != self.firing:
-            self.draw()
+            self.draw(from_update=True)
         self.prev_firing = self.firing
 
-    def draw(self):
-        circle1 = Circle(center=self.location, radius=10)
+    def reset(self):
+        self.was_fired = 0
+        self.firing = False
+
+    def draw(self, from_update=False):
+        radius = 10
+        circle1 = Circle(center=self.location, radius=radius)
         if self.firing:
             circle1.setFill('red')
         else:
-            circle1.setFill(color_rgb(220, 220, 220))
+            if self.was_fired > 0:
+                circle1.setFill('yellow')
+            else:
+                circle1.setFill(color_rgb(240, 240, 240))
+        # if self.prev_firing and from_update:
+        #     circle1.setFill('yellow')
         circle1.draw(self.brain.win)
 
         message = Text(self.location, self.inner_id)

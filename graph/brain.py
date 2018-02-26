@@ -16,6 +16,8 @@ class Brain:
                  default_weight=0.2,
                  default_threshold=0.5,
                  falloff_rate=0.1,
+                 weight_upgrade=0.2,
+                 weight_upper_limit=1.0,
                  rand_seed=43):
         self.neurons: List[Neuron] = []
         self.connections: List[Connection] = []
@@ -25,7 +27,11 @@ class Brain:
         self.default_weight = default_weight
         self.default_threshold = default_threshold
         self.falloff_rate = falloff_rate
+        self.weight_upgrade = weight_upgrade
         self.rand_seed = rand_seed
+        self.upgrade_rule = 'hebbian'
+        self.weight_upper_limit = weight_upper_limit
+        random.seed(self.rand_seed)
 
 
     @abstractmethod
@@ -69,7 +75,6 @@ class Brain:
 
 
     def build_connections(self):
-        random.seed(self.rand_seed)
         self.connections.clear()
         iter = 0
         while True:
@@ -77,10 +82,12 @@ class Brain:
                 if neuron.incoming_connections_count() < self.max_connections_per_neuron:
                     target_idx = self._get_random_neuron_index(except_idx=i)
                     target = self.neurons[target_idx]
-                    if self.get_connection(source=neuron, target=target) or\
-                        self.get_connection(source=target, target=neuron):
+                    if self.get_connection(source=neuron, target=target)\
+                        or self.get_connection(source=target, target=neuron):
                         continue
                     connection = self.create_connection(source=neuron, target=target)
+                    r = random.randint(0, 9)
+                    connection.inhibitory = r == 0
                     self.connections.append(connection)
                 if len(self.connections) / len(self.neurons) > self.average_connections_per_neuron:
                     break

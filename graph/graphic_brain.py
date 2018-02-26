@@ -3,7 +3,7 @@ import random
 import sys
 from time import sleep
 
-from graphics import GraphWin, Point, Circle, Line, Text, color_rgb
+from graphics import GraphWin, Point, Circle, Line, Text, color_rgb, Rectangle
 from math import sqrt
 
 from graph.brain import Brain
@@ -12,6 +12,7 @@ from graph.graphic_connection import GraphicConnection
 from graph.neuron_factory import NeuronFactory
 
 sys.setrecursionlimit(1500)
+
 
 class GraphicBrain(Brain):
 
@@ -22,56 +23,55 @@ class GraphicBrain(Brain):
                  average_connections_per_neuron=2.5,
                  default_weight=0.2,
                  default_threshold=0.5,
-                 falloff_rate=0.1):
+                 weight_upgrade=0.2,
+                 falloff_rate=0.1,
+                 weight_upper_limit=1.0,
+                 rand_seed=42):
         super(GraphicBrain, self).__init__(
             neuron_factory=neuron_factory,
             max_connections_per_neuron=max_connections_per_neuron,
             average_connections_per_neuron=average_connections_per_neuron,
             default_weight=default_weight,
             default_threshold=default_threshold,
-            falloff_rate=falloff_rate
+            weight_upgrade=weight_upgrade,
+            falloff_rate=falloff_rate,
+            rand_seed=rand_seed,
+            weight_upper_limit=weight_upper_limit
         )
         self.win = graph_win
         self.min_margin = 40
         self.min_distance_between_neurons = 50
         self.max_distance_between_neurons = 200
-
+        self.initially_firing = []
 
     def on_allocate(self):
         neuron0 = self.neurons[0]
         neuron0.location = Point(self.win.width / 2, self.win.height / 2)
-        neurons_to_allocate = list(self.neurons)
-        neurons_to_allocate.remove(neuron0)
-        alloction_queue = []
-        alloction_queue.append(neuron0)
-        self.allocate_adjacent_neurons(neuron0, alloction_queue)
+        allocation_queue = [neuron0]
+        self.allocate_adjacent_neurons(neuron0, allocation_queue)
 
-
-    def allocate_adjacent_neurons(self, source_neuron, alloction_queue):
-        # if not neurons_to_allocate:
-        #     return
+    def allocate_adjacent_neurons(self, source_neuron, allocation_queue):
         post_synaptic_neurons = self.get_post_synaptic_neurons(source_neuron)
-        post_synaptic_neurons = [n for n in post_synaptic_neurons if n not in alloction_queue]
+        post_synaptic_neurons = [n for n in post_synaptic_neurons if n not in allocation_queue]
         for neuron in post_synaptic_neurons:
             if neuron.location:
                 continue
             neuron.location = self._find_location_for_neuron_near(source_neuron)
-            alloction_queue.append(neuron)
+            allocation_queue.append(neuron)
 
         pred_synaptic_neurons = self.get_pred_synaptic_neurons(source_neuron)
-        pred_synaptic_neurons = [n for n in pred_synaptic_neurons if n not in alloction_queue]
+        pred_synaptic_neurons = [n for n in pred_synaptic_neurons if n not in allocation_queue]
         for neuron in pred_synaptic_neurons:
             if neuron.location:
                 continue
             neuron.location = self._find_location_for_neuron_near(source_neuron)
-            alloction_queue.append(neuron)
+            allocation_queue.append(neuron)
 
         for neuron in post_synaptic_neurons:
-            self.allocate_adjacent_neurons(neuron, alloction_queue)
+            self.allocate_adjacent_neurons(neuron, allocation_queue)
 
         for neuron in pred_synaptic_neurons:
-            self.allocate_adjacent_neurons(neuron, alloction_queue)
-
+            self.allocate_adjacent_neurons(neuron, allocation_queue)
 
     def _find_location_for_neuron(self):
         iter = 0
@@ -84,7 +84,6 @@ class GraphicBrain(Brain):
                 return Point(x, y)
             if iter > 1000:
                 raise BaseException('Unable to allocate neuron')
-
 
     def _find_location_for_neuron_near(self, neuron):
         iter = 0
@@ -100,7 +99,6 @@ class GraphicBrain(Brain):
                 return Point(x, y)
             if iter > 10000:
                 raise BaseException('Unable to allocate neuron')
-
 
     def _get_nearest_neuron_distance(self, x, y):
         min_distance = 1000000.0
@@ -118,10 +116,8 @@ class GraphicBrain(Brain):
         else:
             return closest_neuron, None
 
-
     def create_connection(self, source, target):
         return GraphicConnection(self, source=source, target=target)
-
 
     def draw(self):
         for conn in self.connections:
@@ -131,7 +127,6 @@ class GraphicBrain(Brain):
         for neuron in self.neurons:
             neuron.draw()
 
-
     def handle_click(self, p: Point):
         neuron, distance = self._get_nearest_neuron_distance(p.x, p.y)
         if distance > 10:
@@ -139,14 +134,88 @@ class GraphicBrain(Brain):
         neuron.fire()
         self.run()
 
+    def handle_double_click(self, p1, p2: Point):
+        neuron1, distance = self._get_nearest_neuron_distance(p1.x, p1.y)
+        neuron2, distance = self._get_nearest_neuron_distance(p2.x, p2.y)
+        neuron1.fire()
+        neuron2.fire()
+        self.initially_firing = [neuron1, neuron2]
+        self.run()
+
+    def handle_neurons(self):
+        self.run()
+
+    def append_neuron(self, p: Point):
+        neuron, distance = self._get_nearest_neuron_distance(p.x, p.y)
+        if distance <= 10:
+            neuron.fire()
+            neuron.draw()
+            self.initially_firing.append(neuron)
+            return True
+        return False
+
+    def clear_initial_neurons(self):
+        self.initially_firing.clear()
+
+    def update_status_message(self, text):
+        center_x = self.win.getWidth() / 2
+        center_y = 30
+        back_color = color_rgb(240, 240, 240)
+        msg_width = 80
+        msg_height = 20
+        rect = Rectangle(
+            Point(center_x - msg_width, center_y - msg_height),
+            Point(center_x + msg_width, center_y + msg_height))
+        rect.setFill(back_color)
+        rect.setOutline(back_color)
+        rect.setWidth(1)  # width of boundary line
+        rect.draw(self.win)
+
+        message = Text(Point(center_x, center_y), text)
+        message.setTextColor('red')
+        message.setStyle('bold')
+        message.setSize(20)
+        message.draw(self.win)
 
     def run(self):
         tick = 0
-        while tick < 10:
+        self.update_status_message('running..')
+
+        for neuron in self.neurons:
+            neuron.reset()
+            neuron.draw()
+
+        max_ticks = 10
+        while tick <= max_ticks:
             tick += 1
             sleep(1)
+
+            one_fired = False
             for neuron in self.neurons:
+                if tick <= 2 and neuron in self.initially_firing:
+                    neuron.fire()
                 neuron.update()
+                if neuron.firing and not neuron in self.initially_firing:
+                    one_fired = True
 
             for conn in self.connections:
                 conn.update()
+
+            for neuron in self.neurons:
+                if neuron.was_fired > 0:
+                    neuron.was_fired -= 1
+                if neuron.was_firing:
+                    neuron.was_firing = False
+                if neuron.firing:
+                    neuron.firing = False
+                    neuron.was_firing = True
+
+            for neuron in self.neurons:
+                neuron.draw()
+
+            if not one_fired:
+                if tick >= max_ticks:
+                    break
+                tick = max_ticks
+
+        self.update_status_message('idle')
