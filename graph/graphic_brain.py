@@ -26,6 +26,7 @@ class GraphicBrain(Brain):
                  weight_upgrade=0.2,
                  falloff_rate=0.1,
                  weight_upper_limit=1.0,
+                 upgrade_rule='synaptic',
                  rand_seed=42):
         super(GraphicBrain, self).__init__(
             neuron_factory=neuron_factory,
@@ -36,7 +37,8 @@ class GraphicBrain(Brain):
             weight_upgrade=weight_upgrade,
             falloff_rate=falloff_rate,
             rand_seed=rand_seed,
-            weight_upper_limit=weight_upper_limit
+            weight_upper_limit=weight_upper_limit,
+            upgrade_rule=upgrade_rule
         )
         self.win = graph_win
         self.min_margin = 40
@@ -145,7 +147,7 @@ class GraphicBrain(Brain):
     def handle_neurons(self):
         self.run()
 
-    def append_neuron(self, p: Point):
+    def append_neuron_by_coord(self, p: Point):
         neuron, distance = self._get_nearest_neuron_distance(p.x, p.y)
         if distance <= 10:
             neuron.fire()
@@ -154,14 +156,19 @@ class GraphicBrain(Brain):
             return True
         return False
 
+
+    def append_neuron(self, neuron):
+        self.initially_firing.append(neuron)
+
+
     def clear_initial_neurons(self):
         self.initially_firing.clear()
 
     def update_status_message(self, text):
         center_x = self.win.getWidth() / 2
-        center_y = 30
+        center_y = 20
         back_color = color_rgb(240, 240, 240)
-        msg_width = 80
+        msg_width = 300
         msg_height = 20
         rect = Rectangle(
             Point(center_x - msg_width, center_y - msg_height),
@@ -217,5 +224,10 @@ class GraphicBrain(Brain):
                 if tick >= max_ticks:
                     break
                 tick = max_ticks
+
+        for neuron in self.initially_firing:
+            neuron.firing = False
+            neuron.was_fired = 0
+            neuron.draw()
 
         self.update_status_message('idle')

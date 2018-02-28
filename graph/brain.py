@@ -18,6 +18,7 @@ class Brain:
                  falloff_rate=0.1,
                  weight_upgrade=0.2,
                  weight_upper_limit=1.0,
+                 upgrade_rule='synaptic',
                  rand_seed=43):
         self.neurons: List[Neuron] = []
         self.connections: List[Connection] = []
@@ -29,7 +30,7 @@ class Brain:
         self.falloff_rate = falloff_rate
         self.weight_upgrade = weight_upgrade
         self.rand_seed = rand_seed
-        self.upgrade_rule = 'hebbian'
+        self.upgrade_rule = upgrade_rule
         self.weight_upper_limit = weight_upper_limit
         random.seed(self.rand_seed)
 

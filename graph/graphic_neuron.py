@@ -13,17 +13,21 @@ class GraphicNeuron(Neuron):
         self.prev_firing = False
         self.was_fired = 0
 
+
     def update(self):
         super(GraphicNeuron, self).update()
         if self.firing:
-            self.was_fired += 5
+            self.was_fired += 3
         if self.prev_firing != self.firing:
             self.draw(from_update=True)
         self.prev_firing = self.firing
 
+
     def reset(self):
         self.was_fired = 0
         self.firing = False
+        self.potential = 0
+
 
     def draw(self, from_update=False):
         radius = 10
