@@ -1,11 +1,13 @@
 from abc import abstractmethod
+
 from typing import List
 import random
 
 from graph.connection import Connection
+from graph.layer import Layer
 from graph.neuron import Neuron
 from graph.neuron_factory import NeuronFactory
-
+from graph.upgrade_rule import UpgradeRule
 
 class Brain:
 
@@ -18,7 +20,8 @@ class Brain:
                  falloff_rate=0.1,
                  weight_upgrade=0.2,
                  weight_upper_limit=1.0,
-                 upgrade_rule='synaptic',
+                 upgrade_rule=UpgradeRule.SYNAPTIC,
+                 default_activation_likelihood=0.1,
                  rand_seed=43):
         self.neurons: List[Neuron] = []
         self.connections: List[Connection] = []
@@ -32,6 +35,8 @@ class Brain:
         self.rand_seed = rand_seed
         self.upgrade_rule = upgrade_rule
         self.weight_upper_limit = weight_upper_limit
+        self.default_activation_likelihood = default_activation_likelihood
+        self.layers = []
         random.seed(self.rand_seed)
 
 
@@ -42,10 +47,31 @@ class Brain:
 
     def allocate_all(self, neuron_number):
         for i in range(neuron_number):
-            neuron = self.neuron_factory.create_neuron(i, self)
+            neuron = self.neuron_factory.create_neuron(i, i, self)
             self.neurons.append(neuron)
         self.build_connections()
         self.on_allocate()
+
+
+    def create_layer(self, neuron_number):
+        layer_number = len(self.layers)
+        layer = Layer(self, layer_number)
+        for i in range(neuron_number):
+            neuron_id = 'l{}_{}'.format(layer_number, i)
+            neuron = self.neuron_factory.create_neuron(neuron_id, i, self, layer)
+            layer.neurons.append(neuron)
+            self.neurons.append(neuron)
+        self.layers.append(layer)
+        return layer
+
+
+    def connect_layers_all_to_all(self, source_layer, target_layer):
+        for src_neuron in source_layer.neurons:
+            for target_neuron in  target_layer.neurons:
+                connection = self.create_connection(source=src_neuron, target=target_neuron)
+                r = random.randint(0, 9)
+                connection.inhibitory = r == 10
+                self.connections.append(connection)
 
 
     def _get_random_neuron_index(self, except_idx):

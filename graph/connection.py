@@ -18,6 +18,7 @@ class Connection:
             self.target.potential += sign * self.weight
             if self.target.potential < 0:
                 self.target.potential = 0
+            self.target.incoming_actions.append(self.source.inner_id)
 
             # self.pulsing = False
 

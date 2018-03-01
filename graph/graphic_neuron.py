@@ -7,8 +7,8 @@ from graph.neuron import Neuron
 
 class GraphicNeuron(Neuron):
 
-    def __init__(self, inner_id, brain: GraphicBrain, location: Point):
-        super(GraphicNeuron, self).__init__(inner_id, brain)
+    def __init__(self, inner_id, presentation, brain: GraphicBrain, location: Point, layer=None):
+        super(GraphicNeuron, self).__init__(inner_id, presentation, brain, layer)
         self.location = location
         self.prev_firing = False
         self.was_fired = 0
@@ -43,7 +43,7 @@ class GraphicNeuron(Neuron):
         #     circle1.setFill('yellow')
         circle1.draw(self.brain.win)
 
-        message = Text(self.location, self.inner_id)
+        message = Text(self.location, self.presentation)
         message.setTextColor('red')
         # message.setStyle('italic')
         message.setSize(10)

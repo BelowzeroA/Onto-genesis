@@ -20,6 +20,7 @@ class GraphicConnection(Connection):
 
 
     def draw(self):
+        return
         if self.pulsing:
             color = 'red'
         else:

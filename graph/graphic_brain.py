@@ -6,7 +6,7 @@ from time import sleep
 from graphics import GraphWin, Point, Circle, Line, Text, color_rgb, Rectangle
 from math import sqrt
 
-from graph.brain import Brain
+from graph.brain import Brain, UpgradeRule
 from graph.calc import get_distance_between_coords
 from graph.graphic_connection import GraphicConnection
 from graph.neuron_factory import NeuronFactory
@@ -27,6 +27,7 @@ class GraphicBrain(Brain):
                  falloff_rate=0.1,
                  weight_upper_limit=1.0,
                  upgrade_rule='synaptic',
+                 default_activation_likelihood=0.1,
                  rand_seed=42):
         super(GraphicBrain, self).__init__(
             neuron_factory=neuron_factory,
@@ -38,7 +39,8 @@ class GraphicBrain(Brain):
             falloff_rate=falloff_rate,
             rand_seed=rand_seed,
             weight_upper_limit=weight_upper_limit,
-            upgrade_rule=upgrade_rule
+            upgrade_rule=upgrade_rule,
+            default_activation_likelihood=default_activation_likelihood
         )
         self.win = graph_win
         self.min_margin = 40
@@ -46,13 +48,32 @@ class GraphicBrain(Brain):
         self.max_distance_between_neurons = 200
         self.initially_firing = []
 
+
     def on_allocate(self):
         neuron0 = self.neurons[0]
         neuron0.location = Point(self.win.width / 2, self.win.height / 2)
         allocation_queue = [neuron0]
-        self.allocate_adjacent_neurons(neuron0, allocation_queue)
+        self._allocate_adjacent_neurons(neuron0, allocation_queue)
 
-    def allocate_adjacent_neurons(self, source_neuron, allocation_queue):
+
+    def allocate_layers(self):
+        center_x = self.win.width / 2
+        available_height = self.win.height - 2 * self.min_margin
+        dy = available_height / len(self.layers)
+        start_y = self.min_margin + 40
+        for i, layer in enumerate(self.layers):
+            layer_y = start_y + i * dy
+            self.allocate_layer(center_x, layer_y, layer)
+
+
+    def allocate_layer(self, center_x, center_y, layer):
+        width_between_neurons = 50
+        leftmost_x = center_x - (len(layer.neurons) / 2 * width_between_neurons)
+        for i, neuron in enumerate(layer.neurons):
+            neuron.location = Point(leftmost_x + i * width_between_neurons, center_y)
+
+
+    def _allocate_adjacent_neurons(self, source_neuron, allocation_queue):
         post_synaptic_neurons = self.get_post_synaptic_neurons(source_neuron)
         post_synaptic_neurons = [n for n in post_synaptic_neurons if n not in allocation_queue]
         for neuron in post_synaptic_neurons:
@@ -70,10 +91,11 @@ class GraphicBrain(Brain):
             allocation_queue.append(neuron)
 
         for neuron in post_synaptic_neurons:
-            self.allocate_adjacent_neurons(neuron, allocation_queue)
+            self._allocate_adjacent_neurons(neuron, allocation_queue)
 
         for neuron in pred_synaptic_neurons:
-            self.allocate_adjacent_neurons(neuron, allocation_queue)
+            self._allocate_adjacent_neurons(neuron, allocation_queue)
+
 
     def _find_location_for_neuron(self):
         iter = 0
@@ -86,6 +108,7 @@ class GraphicBrain(Brain):
                 return Point(x, y)
             if iter > 1000:
                 raise BaseException('Unable to allocate neuron')
+
 
     def _find_location_for_neuron_near(self, neuron):
         iter = 0
@@ -101,6 +124,7 @@ class GraphicBrain(Brain):
                 return Point(x, y)
             if iter > 10000:
                 raise BaseException('Unable to allocate neuron')
+
 
     def _get_nearest_neuron_distance(self, x, y):
         min_distance = 1000000.0
@@ -118,8 +142,10 @@ class GraphicBrain(Brain):
         else:
             return closest_neuron, None
 
+
     def create_connection(self, source, target):
         return GraphicConnection(self, source=source, target=target)
+
 
     def draw(self):
         for conn in self.connections:
@@ -129,12 +155,14 @@ class GraphicBrain(Brain):
         for neuron in self.neurons:
             neuron.draw()
 
+
     def handle_click(self, p: Point):
         neuron, distance = self._get_nearest_neuron_distance(p.x, p.y)
         if distance > 10:
             return
         neuron.fire()
         self.run()
+
 
     def handle_double_click(self, p1, p2: Point):
         neuron1, distance = self._get_nearest_neuron_distance(p1.x, p1.y)
@@ -144,8 +172,10 @@ class GraphicBrain(Brain):
         self.initially_firing = [neuron1, neuron2]
         self.run()
 
+
     def handle_neurons(self):
         self.run()
+
 
     def append_neuron_by_coord(self, p: Point):
         neuron, distance = self._get_nearest_neuron_distance(p.x, p.y)
@@ -163,6 +193,7 @@ class GraphicBrain(Brain):
 
     def clear_initial_neurons(self):
         self.initially_firing.clear()
+
 
     def update_status_message(self, text):
         center_x = self.win.getWidth() / 2
@@ -184,22 +215,27 @@ class GraphicBrain(Brain):
         message.setSize(20)
         message.draw(self.win)
 
-    def run(self):
+
+    def run(self, update_status=True):
         tick = 0
-        self.update_status_message('running..')
+        if update_status:
+            self.update_status_message('running..')
 
         for neuron in self.neurons:
             neuron.reset()
             neuron.draw()
 
         max_ticks = 10
+        if self.upgrade_rule == UpgradeRule.STOCHASTIC:
+            max_ticks = len(self.layers)
+
         while tick <= max_ticks:
             tick += 1
-            sleep(1)
+            sleep(0.1)
 
             one_fired = False
             for neuron in self.neurons:
-                if tick <= 2 and neuron in self.initially_firing:
+                if tick <= 1 and neuron in self.initially_firing:
                     neuron.fire()
                 neuron.update()
                 if neuron.firing and not neuron in self.initially_firing:
@@ -217,17 +253,23 @@ class GraphicBrain(Brain):
                     neuron.firing = False
                     neuron.was_firing = True
 
-            for neuron in self.neurons:
-                neuron.draw()
+            if tick == max_ticks:
+                for neuron in self.neurons:
+                    neuron.draw()
 
-            if not one_fired:
+            if self.upgrade_rule == UpgradeRule.STOCHASTIC:
                 if tick >= max_ticks:
                     break
-                tick = max_ticks
+            else:
+                if not one_fired:
+                    if tick >= max_ticks:
+                        break
+                    tick = max_ticks
 
         for neuron in self.initially_firing:
             neuron.firing = False
             neuron.was_fired = 0
             neuron.draw()
 
-        self.update_status_message('idle')
+        if update_status:
+            self.update_status_message('idle')

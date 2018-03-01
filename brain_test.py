@@ -21,9 +21,9 @@ def main():
                          default_weight=0.2,
                          default_threshold=0.7,
                          weight_upgrade=0.3,
-                         upgrade_rule='hebbian',
+                         upgrade_rule='synaptic',
                          rand_seed=1)
-    brain.allocate_all(100)
+    brain.allocate_all(140)
     brain.draw()
 
     pattern_n = 0
@@ -33,7 +33,7 @@ def main():
         while pattern_n < 10:
             pattern_n += 1
             indices.clear()
-            for i in range(20):
+            for i in range(50):
                 idx = random.randint(0, len(brain.neurons) - 1)
                 indices.append(idx)
 

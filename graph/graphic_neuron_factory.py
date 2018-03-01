@@ -6,5 +6,5 @@ from graph.neuron_factory import NeuronFactory
 
 class GraphicNeuronFactory(NeuronFactory):
 
-    def create_neuron(self, neuron_id, brain: Brain) -> Neuron:
-        return GraphicNeuron(neuron_id, brain, location=None)
+    def create_neuron(self, neuron_id, presentation, brain: Brain, layer) -> Neuron:
+        return GraphicNeuron(neuron_id, presentation, brain, layer=layer, location=None)
