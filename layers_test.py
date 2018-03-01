@@ -5,6 +5,13 @@ from graph.graphic_neuron_factory import GraphicNeuronFactory
 from graph.graphics_test import user32, GraphWin
 from graph.upgrade_rule import UpgradeRule
 
+def refresh(win):
+    win.autoflush = False
+    for item in win.items[:]:
+        item.undraw()
+    win.update()
+    win.autoflush = True
+
 
 def main():
 
@@ -40,13 +47,15 @@ def main():
         brain.initially_firing.append(brain.neurons[3])
         brain.run(update_status=False)
         sleep(1)
+        win.update()
 
     win.getMouse()
+    refresh(win)
 
     middle_layer.reverberate()
     output_layer.reverberate()
 
-    for i in range(50):
+    for i in range(40):
         brain.update_status_message('memorizing {} iteration {}'.format(5, i))
         brain.clear_initial_neurons()
         brain.initially_firing.append(brain.neurons[5])
@@ -54,6 +63,7 @@ def main():
         sleep(1)
 
     win.getMouse()
+    refresh(win)
 
     for i in range(10):
         brain.update_status_message('recovering {} iteration {}'.format(3, i))

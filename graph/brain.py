@@ -74,6 +74,11 @@ class Brain:
                 self.connections.append(connection)
 
 
+    def store_neuron_patterns(self):
+        for neuron in self.neurons:
+            neuron.store_patterns()
+
+
     def _get_random_neuron_index(self, except_idx):
         while True:
             idx = random.randint(0, len(self.neurons) - 1)

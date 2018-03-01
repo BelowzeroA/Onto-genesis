@@ -266,6 +266,8 @@ class GraphicBrain(Brain):
                         break
                     tick = max_ticks
 
+            self.store_neuron_patterns()
+
         for neuron in self.initially_firing:
             neuron.firing = False
             neuron.was_fired = 0

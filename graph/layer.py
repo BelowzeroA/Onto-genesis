@@ -16,11 +16,6 @@ class Layer:
                 likelihood = neuron.incoming_patterns[ref_pattern]
                 if likelihood >= 0.9:
                     mass += likelihood
-            # for pattern in neuron.incoming_patterns:
-            #     likelihood = neuron.incoming_patterns[pattern]
-            #     if likelihood >= 0.9: #self.brain.default_activation_likelihood:
-            #         mass += likelihood
-            #         counter += 1
         return mass / len(self.neurons)
 
 
@@ -34,4 +29,8 @@ class Layer:
 
     def get_max_density(self):
         return 0.5
+
+    #
+    # def stable_pattern_length(self):
+    #     return len(self.neurons) * self.get_max_density()
 
