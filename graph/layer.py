@@ -3,10 +3,11 @@ import random
 
 class Layer:
 
-    def __init__(self, brain, index):
+    def __init__(self, brain, index, min_pattern_length):
         self.brain = brain
         self.neurons = []
         self.index = index
+        self.min_pattern_length = min_pattern_length
 
     def get_density(self, ref_pattern):
         mass = 0.0

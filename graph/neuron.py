@@ -18,7 +18,7 @@ class Neuron:
         self.learning_counter = 0
         self.incoming_actions = []
         self.incoming_patterns = {}
-        self.stored_patterns = []
+        # self.stored_patterns = []
 
 
     def incoming_connections_count(self):
@@ -83,16 +83,19 @@ class Neuron:
 
         self.learning_counter += 1
 
+        if len(self.incoming_actions) < self.layer.min_pattern_length:
+            return
+
         gradient = 0.1
         incoming_action_pattern = '-'.join(self.incoming_actions)
-        if incoming_action_pattern in self.stored_patterns:
-            likelihood = 1.0
+        # if incoming_action_pattern in self.stored_patterns:
+        #     likelihood = 1.0
+        # else:
+        if incoming_action_pattern in self.incoming_patterns:
+            likelihood = self.incoming_patterns[incoming_action_pattern]
         else:
-            if incoming_action_pattern in self.incoming_patterns:
-                likelihood = self.incoming_patterns[incoming_action_pattern]
-            else:
-                likelihood = self.brain.default_activation_likelihood
-                self.incoming_patterns[incoming_action_pattern] = likelihood
+            likelihood = self.brain.default_activation_likelihood
+            self.incoming_patterns[incoming_action_pattern] = likelihood
 
         rnd_val = random.randint(1, 100)
         fire = rnd_val <= likelihood * 100
@@ -109,28 +112,29 @@ class Neuron:
         else:
             self._update_incoming_pattern(incoming_action_pattern, penalty)
 
-        for pattern in self.incoming_patterns:
-            if pattern != incoming_action_pattern:
-                self._update_incoming_pattern(pattern, penalty)
+        # for pattern in self.incoming_patterns:
+        #     if pattern != incoming_action_pattern:
+        #         self._update_incoming_pattern(pattern, penalty)
 
 
     def store_patterns(self):
-        for pattern in self.incoming_patterns:
-            if self.incoming_patterns[pattern] >= 0.99:
-                self.stored_patterns.append(pattern)
+        return
+        # for pattern in self.incoming_patterns:
+        #     if self.incoming_patterns[pattern] >= 0.99:
+        #         self.stored_patterns.append(pattern)
 
 
     def _update_incoming_pattern(self, pattern, gradient):
-        if self.incoming_patterns[pattern] > 0.9:
+        if self.incoming_patterns[pattern] > 0.9 and gradient < 0:
             self.incoming_patterns[pattern] += gradient * 0.1
-        if self.incoming_patterns[pattern] > 0.8:
+        elif self.incoming_patterns[pattern] > 0.8 and gradient < 0:
             self.incoming_patterns[pattern] += gradient * 0.2
         else:
             self.incoming_patterns[pattern] += gradient
 
         if self.incoming_patterns[pattern] < self.brain.default_activation_likelihood:
-            if self.learning_counter > 30:
-                self.incoming_patterns[pattern] = 0
+            if self.learning_counter > 25:
+                self.incoming_patterns[pattern] = 0.01
             else:
                 self.incoming_patterns[pattern] = self.brain.default_activation_likelihood
         if self.incoming_patterns[pattern] > 1.0:

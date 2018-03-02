@@ -242,7 +242,7 @@ class GraphicBrain(Brain):
                     one_fired = True
 
             for conn in self.connections:
-                conn.update()
+                conn.update(draw=False)
 
             for neuron in self.neurons:
                 if neuron.was_fired > 0:

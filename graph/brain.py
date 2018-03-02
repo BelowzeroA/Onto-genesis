@@ -53,12 +53,13 @@ class Brain:
         self.on_allocate()
 
 
-    def create_layer(self, neuron_number):
+    def create_layer(self, neuron_number, min_pattern_length=1):
         layer_number = len(self.layers)
-        layer = Layer(self, layer_number)
+        layer = Layer(self, layer_number, min_pattern_length=min_pattern_length)
         for i in range(neuron_number):
             neuron_id = 'l{}_{}'.format(layer_number, i)
             neuron = self.neuron_factory.create_neuron(neuron_id, i, self, layer)
+
             layer.neurons.append(neuron)
             self.neurons.append(neuron)
         self.layers.append(layer)
@@ -67,7 +68,7 @@ class Brain:
 
     def connect_layers_all_to_all(self, source_layer, target_layer):
         for src_neuron in source_layer.neurons:
-            for target_neuron in  target_layer.neurons:
+            for target_neuron in target_layer.neurons:
                 connection = self.create_connection(source=src_neuron, target=target_neuron)
                 r = random.randint(0, 9)
                 connection.inhibitory = r == 10

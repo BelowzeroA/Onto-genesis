@@ -12,15 +12,14 @@ class GraphicConnection(Connection):
         self.prev_pulsing = False
 
 
-    def update(self):
+    def update(self, draw=True):
         super(GraphicConnection, self).update()
-        if self.prev_pulsing != self.pulsing:
+        if self.prev_pulsing != self.pulsing and draw:
             self.draw()
         self.prev_pulsing = self.pulsing
 
 
     def draw(self):
-        return
         if self.pulsing:
             color = 'red'
         else:
