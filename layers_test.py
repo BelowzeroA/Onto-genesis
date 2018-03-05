@@ -46,9 +46,10 @@ def main():
                          default_threshold=0.7,
                          weight_upgrade=0.3,
                          upgrade_rule=UpgradeRule.STOCHASTIC,
-                         rand_seed=1)
-    middle_layer_size = 6
-    output_layer_size = 6
+                         default_activation_likelihood=0.2,
+                         rand_seed=16)
+    middle_layer_size = 10
+    output_layer_size = 8
     input_layer = brain.create_layer(10)
     middle_layer = brain.create_layer(middle_layer_size)
     output_layer = brain.create_layer(output_layer_size, min_pattern_length=output_layer_size / 2)
@@ -64,7 +65,7 @@ def main():
     train_pattern(brain, win, middle_layer, output_layer, 8)
     train_pattern(brain, win, middle_layer, output_layer, 0)
 
-    for i in range(10):
+    for i in range(20):
         brain.update_status_message('recovering {} iteration {}'.format(8, i + 1))
         brain.clear_initial_neurons()
         brain.initially_firing.append(brain.neurons[8])

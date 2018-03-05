@@ -1,0 +1,36 @@
+{
+  "nodes": [
+    {
+      "id": "1",
+      "patterns": [ "cross street" ]
+    },
+    {
+      "id": "2",
+      "patterns": [ "US" ]
+    },
+    {
+      "id": "3",
+      "patterns": [ "UK" ]
+    },
+    {
+      "id": "4",
+      "patterns": [ "check right side" ]
+    },
+    {
+      "id": "5",
+      "patterns": [ "check left side" ]
+    }
+  ],
+  "connections": [
+    {
+      "sign": 1,
+      "source": "1",
+      "target": "4"
+    },
+    {
+      "sign": 1,
+      "source": "3",
+      "target": "4"
+    }
+  ]
+}

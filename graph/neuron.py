@@ -88,13 +88,9 @@ class Neuron:
 
         gradient = 0.1
         incoming_action_pattern = '-'.join(self.incoming_actions)
-        # if incoming_action_pattern in self.stored_patterns:
-        #     likelihood = 1.0
-        # else:
-        if incoming_action_pattern in self.incoming_patterns:
-            likelihood = self.incoming_patterns[incoming_action_pattern]
-        else:
-            likelihood = self.brain.default_activation_likelihood
+        likelihood, noisy = self._calculate_likelihood(incoming_action_pattern)
+
+        if not noisy:
             self.incoming_patterns[incoming_action_pattern] = likelihood
 
         rnd_val = random.randint(1, 100)
@@ -107,14 +103,29 @@ class Neuron:
             penalty = -gradient * 4
             stimulation = gradient * 0.5
         if fire:
-            self._update_incoming_pattern(incoming_action_pattern, stimulation)
+            if not noisy:
+                self._update_incoming_pattern(incoming_action_pattern, stimulation)
             self.fire()
-        else:
+        elif not noisy:
             self._update_incoming_pattern(incoming_action_pattern, penalty)
 
-        # for pattern in self.incoming_patterns:
-        #     if pattern != incoming_action_pattern:
-        #         self._update_incoming_pattern(pattern, penalty)
+
+    def _calculate_likelihood(self, pattern):
+        noisy = False
+        incoming_neurons = set(pattern.split('-'))
+        if pattern in self.incoming_patterns:
+            likelihood = self.incoming_patterns[pattern]
+        else:
+            for ptrn in self.incoming_patterns:
+                neurons = set(ptrn.split('-'))
+                if neurons.issubset(incoming_neurons):
+                    likelihood = self.incoming_patterns[ptrn]
+                    if likelihood > self.brain.default_activation_likelihood:
+                        noisy = True
+                    break
+            else:
+                likelihood = self.brain.default_activation_likelihood
+        return likelihood, noisy
 
 
     def store_patterns(self):
@@ -132,8 +143,8 @@ class Neuron:
         else:
             self.incoming_patterns[pattern] += gradient
 
-        if self.incoming_patterns[pattern] < self.brain.default_activation_likelihood:
-            if self.learning_counter > 25:
+        if self.incoming_patterns[pattern] <= self.brain.default_activation_likelihood:
+            if self.learning_counter > 20:
                 self.incoming_patterns[pattern] = 0.01
             else:
                 self.incoming_patterns[pattern] = self.brain.default_activation_likelihood

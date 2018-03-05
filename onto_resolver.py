@@ -18,7 +18,6 @@ class OntoResolver:
                 return "no"
 
     def resolve_howto_reply(self, clause):
-
         if clause.predicate != "":
             predicate_node = self.container.find_node(clause.predicate)
             if predicate_node is None:
@@ -38,7 +37,6 @@ class OntoResolver:
                     return node
 
     def get_target_nodes(self, source_nodes):
-
         actions = self.container.find_common_targets_of_type(source_nodes, "action")
         clarifications = self.container.find_common_targets_of_type(source_nodes, "clarification")
         if not actions and not clarifications:
