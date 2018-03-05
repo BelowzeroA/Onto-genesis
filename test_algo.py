@@ -6,7 +6,7 @@ def main():
     container = OntoContainer()
     container.load("onto/sample1.json")
 
-    input = ['cross street', 'UK']
+    input = ['cross street']
     graph_walker = GraphWalker(container)
     result = graph_walker.resolve(input)
     print(result)

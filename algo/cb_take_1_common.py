@@ -1,7 +1,7 @@
 from algo.computing_block import ComputingBlock
 
 
-class cbTake2Common(ComputingBlock):
+class cbTake1Common(ComputingBlock):
 
     def __init__(self, container):
         self.container = container
