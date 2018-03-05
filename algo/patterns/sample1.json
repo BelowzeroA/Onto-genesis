@@ -2,7 +2,7 @@
   "nodes": [
     {
       "id": "0",
-      "type": "starter"
+      "type": "ramification"
     },
     {
       "id": "1",
