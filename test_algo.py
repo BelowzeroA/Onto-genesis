@@ -1,13 +1,17 @@
+from algo.algo_container import AlgoContainer
 from algo.graph_walker import GraphWalker
 from onto_container import OntoContainer
 
 
 def main():
-    container = OntoContainer()
-    container.load("onto/sample1.json")
+    onto_container = OntoContainer()
+    onto_container.load("onto/sample1.json")
+
+    algo_container = AlgoContainer(onto_container=onto_container)
+    algo_container.load("algo/patterns/sample1.json")
 
     input = ['cross street']
-    graph_walker = GraphWalker(container)
+    graph_walker = GraphWalker(onto_container=onto_container, algo_container=algo_container)
     result = graph_walker.resolve(input)
     print(result)
 
