@@ -1,7 +1,7 @@
 import json
 
 from algo.connection import Connection
-from algo.node import Node
+from algo.node import AlgoNode
 
 
 class AlgoContainer:
@@ -16,7 +16,7 @@ class AlgoContainer:
             self.entries = json.load(data_file)
 
         for entry in self.entries['nodes']:
-            node = Node(id=entry['id'], pattern=entry['patterns'][0])
+            node = AlgoNode(id=entry['id'], pattern=entry['patterns'][0])
             self.nodes.append(node)
 
         for entry in self.entries['connections']:
