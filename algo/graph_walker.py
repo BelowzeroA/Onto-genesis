@@ -12,7 +12,8 @@ class GraphWalker:
 
 
     def resolve(self, input):
-        self.fire_initial(input)
+        input_nodes = self.onto_container.get_nodes_by_pattern(input)
+        self.fire_initial(input_nodes)
         self.current_tick = 0
         while not self.resolved:
             self.current_tick += 1
