@@ -2,6 +2,7 @@ import json
 
 from algo.algo_connection import AlgoConnection
 from algo.algo_node import AlgoNode
+from algo.algo_node_signaller import AlgoNodeSignaller
 
 
 class AlgoContainer:
@@ -10,6 +11,7 @@ class AlgoContainer:
         self.nodes = []
         self.connections = []
         self.onto_container = onto_container
+        self.brain = None
 
 
     def load(self, filename):
@@ -17,7 +19,10 @@ class AlgoContainer:
             self.entries = json.load(data_file)
 
         for entry in self.entries['nodes']:
-            node = AlgoNode(id=entry['id'], type=entry['type'], onto_container=self.onto_container, algo_container=self)
+            if entry['type'] == 'signaller':
+                node = AlgoNodeSignaller(id=entry['id'], brain=self.brain)
+            else:
+                node = AlgoNodeSignaller(id=entry['id'], brain=self.brain)
             self.nodes.append(node)
 
         for entry in self.entries['connections']:

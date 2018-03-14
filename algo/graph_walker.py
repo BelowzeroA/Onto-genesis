@@ -4,9 +4,8 @@ from algo.cb_take_2_common import cbTake2Common
 
 class GraphWalker:
 
-    def __init__(self, onto_container, algo_container):
-        self.onto_container = onto_container
-        self.algo_container = algo_container
+    def __init__(self, brain):
+        self.brain = brain
         self.resolved = False
         self.current_tick = 0
 

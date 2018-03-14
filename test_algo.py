@@ -10,8 +10,10 @@ def main():
     algo_container = AlgoContainer(onto_container=onto_container)
     algo_container.load("algo/patterns/sample1.json")
 
+    brain = Brain(onto_container=onto_container, algo_container=algo_container)
+
     input = ['cross street', 'check side' ]
-    graph_walker = GraphWalker(onto_container=onto_container, algo_container=algo_container)
+    graph_walker = GraphWalker(brain=brain)
     result = graph_walker.resolve(input)
     print(result)
 
