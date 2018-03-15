@@ -59,8 +59,8 @@ class OntoContainer:
             return entries[0]
         return None
 
-    def find_node_by_id(self, _id):
 
+    def find_node_by_id(self, _id):
         if isinstance(_id, tuple):
             _id = _id[0]
         entries = list(entry for entry in self.entries if (entry["id"] == _id))
