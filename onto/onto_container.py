@@ -49,6 +49,10 @@ class OntoContainer:
         return [conn for conn in self.connections if conn.source == node]
 
 
+    def get_incoming_connections(self, node):
+        return [conn for conn in self.connections if conn.target == node]
+
+
     def find_node(self, clause_part):
         # for entry in self.entries:
         value = clause_part
@@ -108,4 +112,12 @@ class OntoContainer:
                 weight = self.sum_input_weigths(descendants, target_id)
                 result.append({ "node": target_id, "weight": weight})
             return result
+
+
+    def __repr__(self):
+        repr = ''
+        for node in self.nodes:
+            firing_symbol = 'F' if node.firing else ' '
+            repr += '[{} {}] '.format(firing_symbol, node.node_id)
+        return repr
 

@@ -13,6 +13,10 @@ class Node:
 
     def fire(self):
         self.firing = True
+        incoming_connections = self.container.get_incoming_connections(self)
+        for conn in incoming_connections:
+            if conn.pulsing:
+                conn.upgrade_weight()
 
 
     def update(self):
@@ -22,8 +26,14 @@ class Node:
 
         if self.firing:
             connections = self.container.get_outgoing_connections(self)
-            for connection in connections:
-                connection.pulsing = True
+            if connections:
+                max_weight = max(connections, key=lambda c: c.weight).weight
+                for connection in connections:
+                    if connection.weight == max_weight:
+                        connection.pulsing = True
+
+        if self.potential > 2:
+            self.container.brain.working_memory.write(self)
 
 
     def _repr(self):

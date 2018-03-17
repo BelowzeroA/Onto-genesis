@@ -1,6 +1,3 @@
-from algo.cb_take_1_common import cbTake1Common
-from algo.cb_take_2_common import cbTake2Common
-
 
 class GraphWalker:
 
@@ -11,26 +8,29 @@ class GraphWalker:
 
 
     def resolve(self, input):
-        input_nodes = self.onto_container.get_nodes_by_pattern(input)
+        input_nodes = self.brain.onto_container.get_nodes_by_pattern(input)
         self.fire_initial(input_nodes)
         self.current_tick = 0
-        while not self.resolved:
+        while not self.resolved and self.current_tick < 10:
             self.current_tick += 1
             self.update_state()
+            print(self.brain.onto_container)
 
 
     def update_state(self):
-        for node in self.algo_container.nodes:
+        for node in self.brain.algo_container.nodes:
             node.update()
 
-        for conn in self.algo_container.connections:
+        for conn in self.brain.algo_container.connections:
             conn.update()
 
-        for node in self.onto_container.nodes:
+        for node in self.brain.onto_container.nodes:
             node.update()
 
-        for conn in self.onto_container.connections:
+        for conn in self.brain.onto_container.connections:
             conn.update()
+
+        self.brain.working_memory.update()
 
 
     def fire_initial(self, initial):

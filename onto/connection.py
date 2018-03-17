@@ -10,6 +10,8 @@ class Connection:
         self.container = container
         self.pulsing = False
 
+
     def update(self):
         if self.pulsing:
             self.target.potential += self.weight
+        self.pulsing = False

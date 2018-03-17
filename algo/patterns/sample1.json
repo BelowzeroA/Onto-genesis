@@ -6,23 +6,18 @@
     },
     {
       "id": "1",
-      "type": "response_awaiter",
-      "num_signallers": 1
+      "type": "listener",
+      "num_cells": 2
     },
     {
       "id": "2",
       "type": "signaller",
-      "num_cells": 1
+      "num_cells": 2
     },
     {
       "id": "3",
       "type": "delay",
       "ticks": 3
-    },
-    {
-      "id": "4",
-      "type": "signaller",
-      "signal": "take_2_common"
     }
   ],
   "connections": [
@@ -37,10 +32,6 @@
     {
       "source": "0",
       "target": "3"
-    },
-    {
-      "source": "3",
-      "target": "4"
     }
   ]
 }
