@@ -10,11 +10,13 @@ class WorkingMemoryCell:
         self.node = None
         self.free = True
         self.charge = 0
+        self.node_potential = 0
 
 
     def write(self, node):
         self.node = node
         self.free = False
+        self.node_potential = node.potential
         self.charge = WorkingMemoryCell.max_charge
 
 

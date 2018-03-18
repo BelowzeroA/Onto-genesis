@@ -12,5 +12,5 @@ class AlgoOperationSignaller(AlgoOperation):
         super(AlgoOperationSignaller, self).update()
         if self.firing:
             self.firing = False
-            self.brain.working_memory.broadcast(self.num_cells)
+            self.algorithm.brain.working_memory.broadcast(self.num_cells)
 

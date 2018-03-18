@@ -1,10 +1,11 @@
 {
-  "waiting": 4,
+  "waiting": 6,
   "nodes": [
     {
       "id": "1",
       "type": "listener",
-      "num_cells": 1
+      "num_cells": 1,
+      "filter": "concrete"
     },
     {
       "id": "2",

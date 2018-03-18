@@ -43,7 +43,7 @@ class Node:
                         connection.potential = self.potential
                         potential_spent = True
 
-        if self.potential > 2 and self.firing:
+        if self.potential > 2 and self.firing and not self.initial:
             self.container.brain.working_memory.write(self)
             self.potential = 0
 

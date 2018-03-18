@@ -71,7 +71,13 @@ class WorkingMemory:
                 concrete &= not cell.node.abstract
 
         if len(charged) == 2:
-            self.notify_listeners(MemoryEvent.Two, abstract, concrete)
+            # nodes have different Abstract property
+            if not abstract and not concrete:
+                self.notify_listeners(MemoryEvent.One, True, False)
+                self.notify_listeners(MemoryEvent.One, False, True)
+            else:
+                # nodes have equal Abstract property
+                self.notify_listeners(MemoryEvent.Two, abstract, concrete)
 
         if len(charged) == 1:
             self.notify_listeners(MemoryEvent.One, abstract, concrete)
