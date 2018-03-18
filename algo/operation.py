@@ -1,12 +1,11 @@
-from algo.algo_node_types import AlgoNodeType
 
 
-class AlgoNode:
+class AlgoOperation:
 
-    def __init__(self, id: str, brain):
+    def __init__(self, id: str, algorithm):
         self.node_id = id
         self.threshold = 0.5
-        self.brain = brain
+        self.algorithm = algorithm
         self.potential = 0
         self.firing = False
 
@@ -21,6 +20,6 @@ class AlgoNode:
             self.potential = 0
 
         if self.firing:
-            connections = self.brain.algo_container.get_outgoing_connections(self)
+            connections = self.algorithm.container.get_outgoing_connections(self)
             for connection in connections:
                 connection.pulsing = True

@@ -1,9 +1,9 @@
-from algo.algo_node import AlgoNode
+from algo.operation import AlgoOperation
 
 
-class AlgoConnection:
+class OperationConnection:
 
-    def __init__(self, source: AlgoNode, target: AlgoNode):
+    def __init__(self, source: AlgoOperation, target: AlgoOperation):
         self.source = source
         self.target = target
         self.pulsing = False

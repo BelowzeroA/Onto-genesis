@@ -1,8 +1,10 @@
 
-max_charge = 3
+
 
 
 class WorkingMemoryCell:
+
+    max_charge = 3
 
     def __init__(self):
         self.node = None
@@ -13,7 +15,7 @@ class WorkingMemoryCell:
     def write(self, node):
         self.node = node
         self.free = False
-        self.charge = max_charge
+        self.charge = WorkingMemoryCell.max_charge
 
 
     def update(self):

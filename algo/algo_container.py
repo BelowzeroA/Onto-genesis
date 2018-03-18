@@ -1,65 +1,50 @@
-import json
-
-from algo.algo_connection import AlgoConnection
-from algo.algo_node import AlgoNode
-from algo.algo_node_listener import AlgoNodeListener
-from algo.algo_node_signaller import AlgoNodeSignaller
-from memory.memory_events import MemoryEvent
+from algo.algorithm import Algorithm
+from algo.op_listener import AlgoOperationListener
 
 
 class AlgoContainer:
-    def __init__(self, onto_container):
-        self.entries = {}
-        self.nodes = []
-        self.connections = []
-        self.onto_container = onto_container
-        self.brain = None
+
+    def __init__(self):
+        self.active_algorithm = None
+        self.active_algorithm_idx = 0
+        self.algorithms = []
+        self.finished = False
+        self.out_of_algorithms = False
 
 
-    def load(self, filename):
-        with open(filename, 'r', encoding='utf-8') as data_file:
-            self.entries = json.load(data_file)
-
-        for entry in self.entries['nodes']:
-            node = None
-            if entry['type'] == 'signaller':
-                node = AlgoNodeSignaller(id=entry['id'], brain=self.brain, num_cells=entry['num_cells'])
-            elif entry['type'] == 'listener':
-                node = AlgoNodeListener(id=entry['id'], brain=self.brain, num_cells=entry['num_cells'])
-                if entry['num_cells'] == 1:
-                    event = MemoryEvent.One
-                elif entry['num_cells'] == 2:
-                    event = MemoryEvent.Two
-                self.brain.working_memory.attach_listener(node, event)
-            if node:
-                self.nodes.append(node)
-
-        for entry in self.entries['connections']:
-            source_node = self.get_node_by_id(entry['source'])
-            target_node = self.get_node_by_id(entry['target'])
-            connection = AlgoConnection(source=source_node, target=target_node)
-            self.connections.append(connection)
+    def add_algorithm(self, algo):
+        self.algorithms.append(algo)
 
 
-    def get_node_by_id(self, id):
-        nodes = [node for node in self.nodes if node.node_id == id]
-        if nodes:
-            return nodes[0]
-        return None
+    def activate_first(self):
+        self.active_algorithm = self.algorithms[self.active_algorithm_idx]
+        self.active_algorithm.start(1)
 
 
-    def get_outgoing_connections(self, node):
-        return [conn for conn in self.connections if conn.source == node]
+    def update(self, tick):
+        if self.is_finished():
+            return
+        if self.active_algorithm.time_exceeded and not self.active_algorithm.finished:
+            self.active_algorithm_idx += 1
+            if self.active_algorithm_idx >= len(self.algorithms):
+                self.out_of_algorithms = True
+                return
+            else:
+                self.active_algorithm = self.algorithms[self.active_algorithm_idx]
+                self.active_algorithm.start(tick)
+
+        self.active_algorithm.update(tick)
+        if self.active_algorithm.finished:
+            self.finished = True
 
 
-    def get_incoming_connections(self, node):
-        return [conn for conn in self.connections if conn.target == node]
+    def is_finished(self):
+        return self.finished or self.out_of_algorithms
 
 
-    def print_nodes(self):
-        repr = ''
-        for node in self.nodes:
-            firing_symbol = 'F' if node.firing else ' '
-            repr += '[{} {}] '.format(firing_symbol, node.node_id)
-        return repr
-
+    def attach_to_brain(self, brain):
+        for algo in self.algorithms:
+            algo.brain = brain
+            for op in algo.container.operations:
+                if isinstance(op, AlgoOperationListener):
+                    brain.working_memory.attach_listener(op)

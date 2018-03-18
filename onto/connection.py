@@ -9,9 +9,11 @@ class Connection:
         self.weight = 1
         self.container = container
         self.pulsing = False
+        self.potential = 0
 
 
     def update(self):
         if self.pulsing:
-            self.target.potential += self.weight
+            self.target.potential += self.weight * self.potential
         self.pulsing = False
+        self.potential = 0

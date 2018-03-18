@@ -2,7 +2,8 @@
   "nodes": [
     {
       "id": "1",
-      "patterns": [ "cross street" ]
+      "patterns": [ "cross street" ],
+      "abstract": true
     },
     {
       "id": "2",
@@ -14,15 +15,22 @@
     },
     {
       "id": "4",
-      "patterns": [ "check right side" ]
+      "patterns": [ "check right side" ],
+      "abstract": true
     },
     {
       "id": "5",
-      "patterns": [ "check left side" ]
+      "patterns": [ "check left side" ],
+      "abstract": true
     },
     {
       "id": "6",
-      "patterns": [ "check side" ]
+      "patterns": [ "check side" ],
+      "abstract": true
+    },
+    {
+      "id": "7",
+      "patterns": [ "country" ]
     }
   ],
   "connections": [
@@ -65,6 +73,16 @@
       "sign": 1,
       "source": "6",
       "target": "5"
+    },
+    {
+      "sign": 1,
+      "source": "2",
+      "target": "7"
+    },
+    {
+      "sign": 1,
+      "source": "3",
+      "target": "7"
     }
   ]
 }

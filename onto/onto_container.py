@@ -10,6 +10,7 @@ class OntoContainer:
         self.entries = {}
         self.nodes = []
         self.connections = []
+        self.brain = None
 
 
     def load(self, filename):
@@ -18,6 +19,8 @@ class OntoContainer:
 
         for entry in self.entries['nodes']:
             node = Node(id=entry['id'], pattern=entry['patterns'][0], container=self)
+            if 'abstract' in entry:
+                node.abstract = entry['abstract']
             self.nodes.append(node)
 
         for entry in self.entries['connections']:
@@ -25,6 +28,17 @@ class OntoContainer:
             target_node = self.get_node_by_id(entry['target'])
             connection = Connection(source=source_node, target=target_node, container=self)
             self.connections.append(connection)
+
+    def update(self):
+        for node in self.nodes:
+            node.update()
+
+        for conn in self.connections:
+            conn.update()
+
+
+    def attach_to_brain(self, brain):
+        self.brain = brain
 
 
     def get_node_by_id(self, id):
@@ -118,6 +132,6 @@ class OntoContainer:
         repr = ''
         for node in self.nodes:
             firing_symbol = 'F' if node.firing else ' '
-            repr += '[{} {}] '.format(firing_symbol, node.node_id)
+            repr += '[{}: {} p:{}] '.format(node.node_id, firing_symbol , node.potential)
         return repr
 

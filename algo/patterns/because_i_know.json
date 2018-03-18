@@ -1,0 +1,20 @@
+{
+  "waiting": 4,
+  "nodes": [
+    {
+      "id": "1",
+      "type": "listener",
+      "num_cells": 1
+    },
+    {
+      "id": "2",
+      "type": "exit"
+    }
+  ],
+  "connections": [
+    {
+      "source": "1",
+      "target": "2"
+    }
+  ]
+}

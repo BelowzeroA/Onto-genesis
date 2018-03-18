@@ -1,0 +1,36 @@
+{
+  "waiting": 6,
+  "nodes": [
+    {
+      "id": "1",
+      "type": "listener",
+      "filter": "abstract",
+      "num_cells": 2
+    },
+    {
+      "id": "2",
+      "type": "signaller",
+      "num_cells": 2
+    },
+    {
+      "id": "3",
+      "type": "listener",
+      "filter": "concrete",
+      "num_cells": 1
+    },
+    {
+      "id": "4",
+      "type": "exit"
+    }
+  ],
+  "connections": [
+    {
+      "source": "1",
+      "target": "2"
+    },
+    {
+      "source": "3",
+      "target": "4"
+    }
+  ]
+}

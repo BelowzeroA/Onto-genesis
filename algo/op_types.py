@@ -1,8 +1,8 @@
 from enum import Enum
 
 
-class AlgoNodeType(Enum):
+class AlgoOperationType(Enum):
     Ramification = 1
     Signaller = 2
-    ResponseAwaiter = 3
+    Listener = 3
     Delay = 4
