@@ -1,6 +1,6 @@
 
 
-class OntoBulder:
+class OntoBuilder:
 
     def __init__(self):
         pass
@@ -15,4 +15,8 @@ class OntoBulder:
 
 
     def build(self, filename):
-        lines = OntoBulder.load_list_from_file(filename)
+        lines = OntoBuilder.load_list_from_file(filename)
+
+
+    def _build_graph(self, line):
+        pass

@@ -3,10 +3,13 @@ from algo.algorithm import Algorithm
 from algo.graph_walker import GraphWalker
 from algo.op_container import OperationContainer
 from brain.brain import Brain
+from onto.builder import OntoBuilder
 from onto.onto_container import OntoContainer
 
 
 def main():
+
+    builder = OntoBuilder()
 
     onto_container = OntoContainer()
     onto_container.load("data/sample1.json")
