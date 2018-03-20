@@ -10,7 +10,8 @@ from onto.onto_container import OntoContainer
 def main():
 
     builder = OntoBuilder()
-    builder.build('data/knowledge_base.txt')
+    builder.build_knowledge_base('data/knowledge_base.txt')
+    builder.build_facts('data/fact_base.txt')
     builder.store('data/knowledge_base.json')
 
     onto_container = OntoContainer()

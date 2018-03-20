@@ -29,6 +29,7 @@ class OntoContainer:
             connection = Connection(source=source_node, target=target_node, container=self)
             self.connections.append(connection)
 
+
     def update(self):
         for node in self.nodes:
             node.update()
@@ -87,9 +88,13 @@ class OntoContainer:
         return None
 
 
+    def are_nodes_connected(self, node1, node2):
+        return len([conn for conn in self.connections if conn.source == node1 and conn.target == node2]) > 0 \
+            or len([conn for conn in self.connections if conn.source == node2 and conn.target == node1]) > 0
+
+
     @staticmethod
     def sum_input_weigths(descendants, target_id):
-
         weight = 0
         for value in descendants.values():
             weight += sum(conn["weight"] for conn in value if conn["node_id"] == target_id)
@@ -97,7 +102,6 @@ class OntoContainer:
 
 
     def find_common_targets_of_type(self, source_nodes, _type):
-
         descendants = {}
         for node in source_nodes:
             node_id = node["id"]
@@ -126,6 +130,12 @@ class OntoContainer:
                 weight = self.sum_input_weigths(descendants, target_id)
                 result.append({ "node": target_id, "weight": weight})
             return result
+
+
+    def sort_nodes_by_id(self):
+        for node in self.nodes:
+            node.numeric_id = int(node.node_id)
+        self.nodes.sort(key=lambda x: x.numeric_id)
 
 
     def __repr__(self):

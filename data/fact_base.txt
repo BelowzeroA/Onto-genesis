@@ -1,0 +1,2 @@
+USA is a country with right-hand traffic
+UK is a country with left-hand traffic

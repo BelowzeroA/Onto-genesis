@@ -1,3 +1,4 @@
+import jsonpickle
 
 
 class Node:
@@ -52,10 +53,19 @@ class Node:
 
 
     def _repr(self):
-        return '[id: {}, pattern: {}]'.format(self.node_id, self.pattern)
+        return '[id: {} "{}"]'.format(self.node_id, self.pattern)
 
     def __repr__(self):
         return self._repr()
 
     def __str__(self):
         return self._repr()
+
+
+    def serialize(self):
+        _dict = {
+            'id': self.node_id,
+            'patterns': [ self.pattern ],
+            'abstract': self.abstract
+        }
+        return _dict

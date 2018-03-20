@@ -1,2 +1,6 @@
 [UK] * [country]
-[US] * [country]
+[USA] * [country]
+[right-hand] + [traffic]
+[left-hand] + [traffic]
+[left-hand traffic] + [country]
+[right-hand traffic] + [country]
