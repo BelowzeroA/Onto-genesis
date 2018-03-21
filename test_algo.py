@@ -15,7 +15,8 @@ def main():
     builder.store('data/knowledge_base.json')
 
     onto_container = OntoContainer()
-    onto_container.load("data/sample1.json")
+    # onto_container.load("data/sample1.json")
+    onto_container.load("data/knowledge_base.json")
 
     algo1 = Algorithm(onto_container=onto_container, filename='algo/patterns/because_i_know.json')
     algo2 = Algorithm(onto_container=onto_container, filename='algo/patterns/resolve_ambiguity.json')
@@ -26,7 +27,7 @@ def main():
 
     brain = Brain(onto_container=onto_container, algo_container=algo_container)
 
-    input = ['cross street', 'check', 'side' ]
+    input = ['cross', 'street', 'USA', 'check', 'side' ]
     graph_walker = GraphWalker(brain=brain)
     result = graph_walker.resolve(input)
     print(result)

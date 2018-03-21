@@ -4,3 +4,8 @@
 [left-hand] + [traffic]
 [left-hand traffic] + [country]
 [right-hand traffic] + [country]
+[cross] + [street]
+[right] + [side]
+[left] + [side]
+[check] + [right side]
+[check] + [left side]

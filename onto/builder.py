@@ -115,6 +115,7 @@ class OntoBuilder:
             most_abstract_node = self._get_most_abstract_node(node, nodes, eliminated)
             if most_abstract_node:
                 nodes_to_connect.add(most_abstract_node)
+        nodes_to_connect = [node for node in nodes_to_connect if node not in eliminated]
 
         # connect em all somehow
         if len(nodes_to_connect) < 2:
@@ -138,15 +139,16 @@ class OntoBuilder:
     def _get_most_abstract_node(self, src_node, nodes, eliminated):
         current_node = src_node
         while True:
-            abstract_node = self._get_most_abstract_node_step(current_node, nodes)
-            if abstract_node == current_node:
+            abstract_node = self._get_most_abstract_node_step(current_node, nodes, eliminated)
+            if abstract_node == current_node or abstract_node in eliminated:
                 return abstract_node
             eliminated.append(current_node)
             current_node = abstract_node
 
 
-    def _get_most_abstract_node_step(self, src_node, nodes):
+    def _get_most_abstract_node_step(self, src_node, nodes, eliminated):
         upper_abstract = self._get_upper_abstract_nodes(src_node)
+        upper_abstract = [node for node in upper_abstract if node not in eliminated]
         if len(upper_abstract) == 0:
             return src_node
 
@@ -157,6 +159,7 @@ class OntoBuilder:
                     continue
                 if self.container.are_nodes_connected(node, abstract_node):
                     candidate_abstracts.add(abstract_node)
+                    eliminated.append(node)
         if len(candidate_abstracts) > 1:
             raise BaseException('donna what to do with 2 parallel abstracts')
         if len(candidate_abstracts) == 1:
