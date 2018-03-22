@@ -125,7 +125,7 @@ class OntoBuilder:
         else:
             self.id_counter += 1
             self.fact_counter += 1
-            pattern = 'fact {}'.format(self.fact_counter)
+            pattern = 'direction {}'.format(self.fact_counter)
             fact_node = Node(id=str(self.id_counter), pattern=pattern, container=self.container, abstract=True)
             self.container.nodes.append(fact_node)
             for node in nodes_to_connect:
@@ -166,9 +166,4 @@ class OntoBuilder:
             return candidate_abstracts.pop()
         else:
             return src_node
-
-
-
-
-
 

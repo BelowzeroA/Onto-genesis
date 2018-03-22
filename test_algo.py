@@ -9,10 +9,10 @@ from onto.onto_container import OntoContainer
 
 def main():
 
-    builder = OntoBuilder()
-    builder.build_knowledge_base('data/knowledge_base.txt')
-    builder.build_facts('data/fact_base.txt')
-    builder.store('data/knowledge_base.json')
+    # builder = OntoBuilder()
+    # builder.build_knowledge_base('data/knowledge_base.txt')
+    # builder.build_facts('data/fact_base.txt')
+    # builder.store('data/knowledge_base.json')
 
     onto_container = OntoContainer()
     # onto_container.load("data/sample1.json")
