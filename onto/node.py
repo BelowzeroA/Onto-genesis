@@ -51,7 +51,7 @@ class Node:
 
 
     def _repr(self):
-        return '[id: {} "{}"]'.format(self.node_id, self.pattern)
+        return '[id:{} "{}"]'.format(self.node_id, self.pattern)
 
     def __repr__(self):
         return self._repr()

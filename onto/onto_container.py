@@ -142,6 +142,6 @@ class OntoContainer:
         repr = ''
         for node in self.nodes:
             firing_symbol = 'F' if node.firing else ' '
-            repr += '[{}: {} p:{}] '.format(node.node_id, firing_symbol , node.potential)
+            repr += '[{}:{} p:{}] '.format(node.node_id, firing_symbol , node.potential)
         return repr
 
