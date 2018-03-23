@@ -11,6 +11,7 @@ class Connection:
         self.container = container
         self.pulsing = False
         self.potential = 0
+        self.secondary = False
 
 
     def update(self):
