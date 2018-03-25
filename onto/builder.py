@@ -1,5 +1,6 @@
 import re
 import json
+import string
 from json import JSONEncoder
 
 from onto.connection import Connection
@@ -40,8 +41,19 @@ class OntoBuilder:
 
     def build_facts(self, filename):
         lines = OntoBuilder.load_list_from_file(filename)
+        direction_nodes = []
         for line in lines:
-            self._build_fact(line)
+            node = self._build_fact(line)
+            if node:
+                direction_nodes.append(node)
+        if len(direction_nodes) > 1:
+            self.id_counter += 1
+            pattern = 'direction'
+            abstract_direction_node = Node(id=str(self.id_counter), pattern=pattern, container=self.container, abstract=True)
+            self.container.nodes.append(abstract_direction_node)
+            for node in direction_nodes:
+                self._add_bidirect_connections(abstract_direction_node, node)
+
 
 
     def store(self, filename):
@@ -100,7 +112,8 @@ class OntoBuilder:
 
 
     def _build_fact(self, line):
-        terms = line.split()
+        translator = str.maketrans('', '', string.punctuation.replace('-', '') + '«»')
+        terms = line.translate(translator).split()
         nodes_to_connect = set()
         nodes = []
         # collect nodes for patterns
@@ -130,6 +143,7 @@ class OntoBuilder:
             self.container.nodes.append(fact_node)
             for node in nodes_to_connect:
                 self._add_bidirect_connections(fact_node, node)
+            return fact_node
 
 
     def _get_upper_abstract_nodes(self, node):

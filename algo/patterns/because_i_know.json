@@ -5,7 +5,8 @@
       "id": "1",
       "type": "listener",
       "num_cells": 1,
-      "filter": "concrete"
+      "filter": "concrete",
+      "connected_with": "context"
     },
     {
       "id": "2",

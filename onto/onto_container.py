@@ -30,6 +30,28 @@ class OntoContainer:
             self.connections.append(connection)
 
 
+    def _add_bidirect_connections(self, node1, node2, secondary=False):
+        if node1 == node2:
+            raise BaseException('cannot connect node to itself')
+        connection = Connection(source=node1, target=node2, container=self)
+        connection.secondary = secondary
+        self.connections.append(connection)
+        connection = Connection(source=node2, target=node1, container=self)
+        connection.secondary = secondary
+        self.connections.append(connection)
+
+
+    def build_secondary_connections(self):
+        for node in self.nodes:
+            for common_neighbor in self.nodes:
+                if self.are_nodes_connected(node, common_neighbor, primary_only=True):
+                    for candidate_node in self.nodes:
+                        if candidate_node != node and \
+                            self.are_nodes_connected(candidate_node, common_neighbor, primary_only=True)\
+                            and not self.are_nodes_connected(node, candidate_node):
+                            self._add_bidirect_connections(node, candidate_node, secondary=True)
+
+
     def update(self):
         for node in self.nodes:
             node.update()
@@ -68,6 +90,13 @@ class OntoContainer:
         return [conn for conn in self.connections if conn.target == node]
 
 
+    def get_connection_between_nodes(self, source, target):
+        connections = [conn for conn in self.connections if conn.target == target and conn.source == source]
+        if connections:
+            return connections[0]
+        return None
+
+
     def find_node(self, clause_part):
         # for entry in self.entries:
         value = clause_part
@@ -88,9 +117,12 @@ class OntoContainer:
         return None
 
 
-    def are_nodes_connected(self, node1, node2):
-        return len([conn for conn in self.connections if conn.source == node1 and conn.target == node2]) > 0 \
-            or len([conn for conn in self.connections if conn.source == node2 and conn.target == node1]) > 0
+    def are_nodes_connected(self, node1, node2, primary_only=False):
+        c1 = [conn for conn in self.connections if conn.source == node1 and conn.target == node2 and
+                    (not conn.secondary or primary_only == False)]
+        c2 = [conn for conn in self.connections if conn.source == node2 and conn.target == node1 and
+                    (not conn.secondary or primary_only == False)]
+        return len(c1) > 0 or len(c2) > 0
 
 
     @staticmethod

@@ -22,20 +22,23 @@ class AlgoContainer:
 
 
     def update(self, tick):
+        algorithm_switched = False
         if self.is_finished():
-            return
+            return True
         if self.active_algorithm.time_exceeded and not self.active_algorithm.finished:
             self.active_algorithm_idx += 1
             if self.active_algorithm_idx >= len(self.algorithms):
                 self.out_of_algorithms = True
-                return
+                return True
             else:
+                algorithm_switched = True
                 self.active_algorithm = self.algorithms[self.active_algorithm_idx]
                 self.active_algorithm.start(tick)
 
         self.active_algorithm.update(tick)
         if self.active_algorithm.finished:
             self.finished = True
+        return algorithm_switched
 
 
     def is_finished(self):

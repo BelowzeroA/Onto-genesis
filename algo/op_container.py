@@ -28,6 +28,7 @@ class OperationContainer:
             elif entry['type'] == 'listener':
                 op = AlgoOperationListener(id=entry['id'], algorithm=self.algorithm, num_cells=entry['num_cells'])
                 op.filter = entry['filter'] if 'filter' in entry else None
+                op.connected_with = entry['connected_with'] if 'connected_with' in entry else None
                 if entry['num_cells'] == 1:
                     op.event = MemoryEvent.One
                 elif entry['num_cells'] == 2:

@@ -4,13 +4,14 @@
     {
       "id": "1",
       "type": "listener",
-      "filter": "concrete",
-      "num_cells": 2
+      "filter": "abstract",
+      "num_cells": 1,
+      "connected_with": "direction"
     },
     {
       "id": "2",
       "type": "signaller",
-      "num_cells": 2
+      "num_cells": 1
     },
     {
       "id": "3",

@@ -27,7 +27,6 @@ class Algorithm:
 
 
     def update(self, tick):
-
         if self.active:
             self.current_tick = tick
             if self.current_tick - self.start_tick >= self.wait_ticks:
@@ -39,4 +38,8 @@ class Algorithm:
                 op.update()
             for conn in self.container.connections:
                 conn.update()
+
+
+    def __repr__(self):
+        return self.name
 

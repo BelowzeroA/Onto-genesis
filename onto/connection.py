@@ -11,12 +11,15 @@ class Connection:
         self.container = container
         self.pulsing = False
         self.potential = 0
+        self.last_pulsing_tick = -999
         self.secondary = False
 
 
     def update(self):
         if self.pulsing:
-            self.target.potential += self.weight * self.potential
+            self.last_pulsing_tick = self.container.brain.current_tick
+            weight_coefficient = 0.5 if self.secondary else 1
+            self.target.potential += self.weight * weight_coefficient # self.potential
         self.pulsing = False
         self.potential = 0
 

@@ -10,3 +10,4 @@ class Brain:
 
         self.onto_container.attach_to_brain(self)
         self.algo_container.attach_to_brain(self)
+        self.current_tick = 0

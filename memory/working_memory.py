@@ -10,6 +10,7 @@ class WorkingMemory:
 
     def __init__(self):
         self.listeners = []
+        self.context = None
         self.cells: List[WorkingMemoryCell] = []
         for i in range(memory_limit):
             self.cells.append(WorkingMemoryCell())
@@ -29,18 +30,18 @@ class WorkingMemory:
         self.listeners.append({'operation': operation, 'event': operation.event})
 
 
-    def notify_listeners(self, event, abstract, concrete):
+    def notify_listeners(self, event, charged_cells, abstract, concrete):
         for listener in self.listeners:
             if listener['event'] == event:
                 operation = listener['operation']
                 if not operation.algorithm.active:
                     continue
-                if operation.filter:
-                    if operation.filter == 'abstract' and not abstract:
-                        continue
-                    if operation.filter == 'concrete' and not concrete:
-                        continue
-                operation.fire()
+                attention_nodes = [cell.node for cell in charged_cells]
+                wm_context = {'context': self.context,
+                              'abstract': abstract,
+                              'concrete': concrete,
+                              'attention': attention_nodes}
+                operation.fire_if_conditions(wm_context)
 
 
     def broadcast(self, num_cells):
@@ -64,8 +65,14 @@ class WorkingMemory:
         charged = []
         abstract = True
         concrete = True
+        max_potential = 0.0
         for cell in self.cells:
             if not cell.free and cell.charge == WorkingMemoryCell.max_charge:
+                if cell.node_potential > max_potential:
+                    max_potential = cell.node_potential
+
+        for cell in self.cells:
+            if not cell.free and cell.charge == WorkingMemoryCell.max_charge and cell.node_potential == max_potential:
                 charged.append(cell)
                 abstract &= cell.node.abstract
                 concrete &= not cell.node.abstract
@@ -77,10 +84,10 @@ class WorkingMemory:
                 self.notify_listeners(MemoryEvent.One, False, True)
             else:
                 # nodes have equal Abstract property
-                self.notify_listeners(MemoryEvent.Two, abstract, concrete)
+                self.notify_listeners(MemoryEvent.Two, charged, abstract, concrete)
 
         if len(charged) == 1:
-            self.notify_listeners(MemoryEvent.One, abstract, concrete)
+            self.notify_listeners(MemoryEvent.One, charged, abstract, concrete)
 
 
     def update(self):
