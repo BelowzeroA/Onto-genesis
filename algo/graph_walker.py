@@ -20,17 +20,20 @@ class GraphWalker:
             print(self.brain.working_memory)
 
         if self.brain.algo_container.finished:
-            return self.brain.working_memory.active_cells_content()
+            return self.brain.working_memory.captured_cells_content()
 
 
     def update_state(self):
         self.current_tick += 1
         self.brain.current_tick = self.current_tick
+
         algorithm_switched = self.brain.algo_container.update(self.current_tick)
+
         if self.brain.algo_container.finished:
             return
         elif algorithm_switched:
             self.reset_state()
+
         self.current_tick += 1
         algorithm_switched = self.brain.algo_container.update(self.current_tick)
         if not self.brain.algo_container.finished:

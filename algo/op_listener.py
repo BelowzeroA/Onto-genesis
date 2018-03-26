@@ -24,22 +24,32 @@ class AlgoOperationListener(AlgoOperation):
             if self.filter == 'concrete' and not wm_context['concrete']:
                 return
         attention_cells = wm_context['attention']
-        if self.connected_with:
-            if len(attention_cells) > 1:
-                return
-            if self.connected_with == 'context':
-                if not self.algorithm.onto_container.are_nodes_connected(
-                        attention_cells[0].node,
-                        wm_context['context'],
-                        primary_only=False):
-                    return
-            elif self.connected_with:
-                target_node = self.algorithm.onto_container.get_node_by_pattern(self.connected_with)
-                if not self.algorithm.onto_container.are_nodes_connected(
-                        attention_cells[0].node,
-                        target_node,
-                        primary_only=True):
-                    return
+        cell_to_capture = attention_cells[0]
 
-        attention_cells[0].captured = True
-        self.fire()
+        if self.connected_with:
+            cell_to_capture = None
+            for cell in attention_cells:
+                if self._is_cell_connected_with(cell, wm_context):
+                    cell_to_capture = cell
+                    break
+
+        if cell_to_capture:
+            cell_to_capture.captured = True
+            self.fire()
+
+
+    def _is_cell_connected_with(self, cell, wm_context):
+        if self.connected_with == 'context':
+            if not self.algorithm.onto_container.are_nodes_connected(
+                    cell.node,
+                    wm_context['context'],
+                    primary_only=False):
+                return False
+        elif self.connected_with:
+            target_node = self.algorithm.onto_container.get_node_by_pattern(self.connected_with)
+            if not self.algorithm.onto_container.are_nodes_connected(
+                    cell.node,
+                    target_node,
+                    primary_only=True):
+                return False
+        return True

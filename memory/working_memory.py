@@ -66,6 +66,11 @@ class WorkingMemory:
         return [cell.node for cell in self.cells if not cell.free and cell.charge == max_charge]
 
 
+    def captured_cells_content(self):
+        max_charge = max(self.cells, key=lambda c: c.charge).charge
+        return [cell.node for cell in self.cells if not cell.free and cell.charge == max_charge and cell.captured]
+
+
     def check_listeners(self):
         charged = []
         abstract = True

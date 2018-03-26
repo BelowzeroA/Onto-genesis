@@ -43,6 +43,8 @@ class OntoBuilder:
         lines = OntoBuilder.load_list_from_file(filename)
         direction_nodes = []
         for line in lines:
+            if line.startswith('#'):
+                continue
             node = self._build_fact(line)
             if node:
                 direction_nodes.append(node)
@@ -140,6 +142,7 @@ class OntoBuilder:
             self.fact_counter += 1
             pattern = 'direction {}'.format(self.fact_counter)
             fact_node = Node(id=str(self.id_counter), pattern=pattern, container=self.container, abstract=True)
+            fact_node.knowledge_center = True
             self.container.nodes.append(fact_node)
             for node in nodes_to_connect:
                 self._add_bidirect_connections(fact_node, node)

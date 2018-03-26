@@ -2,3 +2,5 @@ USA is a country with right-hand traffic
 UK is a country with left-hand traffic
 To cross the street in a country with left-hand traffic, check your right side
 To cross the street in a country with right-hand traffic, check your left side
+#To cross the street in UK, check your right side
+#To cross the street in USA, check your left side

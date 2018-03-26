@@ -14,6 +14,7 @@ class Node:
         self.container = container
         self.last_firing_tick = 0
         self.firing_period = 0
+        self.knowledge_center = False
         self.contributors = []
 
 
@@ -84,6 +85,7 @@ class Node:
         _dict = {
             'id': self.node_id,
             'patterns': [ self.pattern ],
-            'abstract': self.abstract
+            'abstract': self.abstract,
+            'knowledge_center': self.knowledge_center
         }
         return _dict

@@ -48,7 +48,8 @@ class OntoContainer:
                     for candidate_node in self.nodes:
                         if candidate_node != node and \
                             self.are_nodes_connected(candidate_node, common_neighbor, primary_only=True)\
-                            and not self.are_nodes_connected(node, candidate_node):
+                            and not self.are_nodes_connected(node, candidate_node)\
+                                and not (node.knowledge_center and candidate_node.knowledge_center):
                             self._add_bidirect_connections(node, candidate_node, secondary=True)
 
 
