@@ -23,23 +23,23 @@ class AlgoOperationListener(AlgoOperation):
                 return
             if self.filter == 'concrete' and not wm_context['concrete']:
                 return
-        attention_nodes = wm_context['attention']
+        attention_cells = wm_context['attention']
         if self.connected_with:
-            if len(attention_nodes) > 1:
+            if len(attention_cells) > 1:
                 return
             if self.connected_with == 'context':
                 if not self.algorithm.onto_container.are_nodes_connected(
-                        attention_nodes[0],
+                        attention_cells[0].node,
                         wm_context['context'],
-                        primary_only=True):
+                        primary_only=False):
                     return
             elif self.connected_with:
                 target_node = self.algorithm.onto_container.get_node_by_pattern(self.connected_with)
                 if not self.algorithm.onto_container.are_nodes_connected(
-                        attention_nodes[0],
+                        attention_cells[0].node,
                         target_node,
                         primary_only=True):
                     return
 
-
+        attention_cells[0].captured = True
         self.fire()

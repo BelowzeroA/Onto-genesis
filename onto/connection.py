@@ -19,7 +19,9 @@ class Connection:
         if self.pulsing:
             self.last_pulsing_tick = self.container.brain.current_tick
             weight_coefficient = 0.5 if self.secondary else 1
-            self.target.potential += self.weight * weight_coefficient # self.potential
+            potentiation = self.weight * weight_coefficient
+            self.target.potential += potentiation # self.potential
+            self.target.contributors.append('{}: {}'.format(self.source.node_id, potentiation))
         self.pulsing = False
         self.potential = 0
 

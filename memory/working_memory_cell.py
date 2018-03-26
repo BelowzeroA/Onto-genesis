@@ -11,6 +11,7 @@ class WorkingMemoryCell:
         self.free = True
         self.charge = 0
         self.node_potential = 0
+        self.captured = False
 
 
     def write(self, node):

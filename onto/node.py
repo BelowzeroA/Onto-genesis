@@ -1,7 +1,7 @@
 
 class Node:
 
-    initial_potential_period = 2
+    initial_potential_period = 1
 
     def __init__(self, id, pattern, container, abstract=False):
         self.node_id = id
@@ -13,6 +13,8 @@ class Node:
         self.abstract = abstract
         self.container = container
         self.last_firing_tick = 0
+        self.firing_period = 0
+        self.contributors = []
 
 
     def fire(self):
@@ -31,8 +33,11 @@ class Node:
             self.firing = True
             self.last_firing_tick = self.container.brain.current_tick
 
+        self.contributors.clear()
+
         ticks_since_last_firing = self.container.brain.current_tick - self.last_firing_tick
         keep_firing = self.initial and ticks_since_last_firing <= Node.initial_potential_period
+        keep_firing |= ticks_since_last_firing < self.firing_period
 
         # leak
         if self.potential > 0 and not self.firing and not keep_firing:

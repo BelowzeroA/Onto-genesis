@@ -1,4 +1,5 @@
 import ntpath
+import os
 
 from algo.op_container import OperationContainer
 
@@ -7,7 +8,7 @@ class Algorithm:
 
     def __init__(self, onto_container, filename):
         self.algo_id = id
-        self.name = ntpath.basename(filename)
+        self.name = os.path.splitext(ntpath.basename(filename))[0]
         self.container = OperationContainer(onto_container=onto_container, algorithm=self)
         self.container.load(filename)
         self.onto_container = onto_container
