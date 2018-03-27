@@ -20,8 +20,9 @@ def main():
     onto_container.build_secondary_connections()
 
     algo1 = Algorithm(onto_container=onto_container, filename='algo/patterns/because_i_know.json')
-    algo2 = Algorithm(onto_container=onto_container, filename='algo/patterns/resolve_ambiguity.json')
-    algo3 = Algorithm(onto_container=onto_container, filename='algo/patterns/inference_bridge.json')
+    algo2 = Algorithm(onto_container=onto_container, filename='algo/patterns/inference_bridge.json')
+    algo3 = Algorithm(onto_container=onto_container, filename='algo/patterns/resolve_ambiguity.json')
+
 
     algo_container = AlgoContainer()
     algo_container.add_algorithm(algo1)
@@ -30,7 +31,7 @@ def main():
 
     brain = Brain(onto_container=onto_container, algo_container=algo_container)
 
-    input = ['side', 'check', 'cross', 'street', 'USA']
+    input = ['side', 'check', 'cross', 'street', 'UK']
     # input = ['country', 'check', 'side', 'left', 'cross', 'street']
     graph_walker = GraphWalker(brain=brain)
     result = graph_walker.resolve(input)

@@ -24,17 +24,18 @@ class AlgoOperationListener(AlgoOperation):
             if self.filter == 'concrete' and not wm_context['concrete']:
                 return
         attention_cells = wm_context['attention']
-        cell_to_capture = attention_cells[0]
+        cells_to_capture = []# attention_cells[0]
 
         if self.connected_with:
             cell_to_capture = None
             for cell in attention_cells:
                 if self._is_cell_connected_with(cell, wm_context):
-                    cell_to_capture = cell
-                    break
+                    cells_to_capture.append(cell)
+                    if len(cells_to_capture) == self.num_cells:
+                        break
 
-        if cell_to_capture:
-            cell_to_capture.captured = True
+        for cell in cells_to_capture:
+            cell.captured = True
             self.fire()
 
 

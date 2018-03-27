@@ -15,6 +15,7 @@ class Node:
         self.last_firing_tick = 0
         self.firing_period = 0
         self.knowledge_center = False
+        self.initial_potential_period = Node.initial_potential_period
         self.contributors = []
 
 
@@ -37,7 +38,7 @@ class Node:
         self.contributors.clear()
 
         ticks_since_last_firing = self.container.brain.current_tick - self.last_firing_tick
-        keep_firing = self.initial and ticks_since_last_firing <= Node.initial_potential_period
+        keep_firing = self.initial and ticks_since_last_firing <= self.initial_potential_period
         keep_firing |= ticks_since_last_firing < self.firing_period
 
         # leak

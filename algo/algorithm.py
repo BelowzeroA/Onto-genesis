@@ -2,6 +2,7 @@ import ntpath
 import os
 
 from algo.op_container import OperationContainer
+from onto.node import Node
 
 
 class Algorithm:
@@ -18,6 +19,8 @@ class Algorithm:
         self.start_tick = 0
         self.current_tick = 0
         self.wait_ticks = self.container.entries['waiting']
+        self.initial_potential_period = self.container.entries['initial_potential_period'] \
+            if 'initial_potential_period' in self.container.entries else Node.initial_potential_period
         self.next = None
 
 
@@ -39,6 +42,12 @@ class Algorithm:
                 op.update()
             for conn in self.container.connections:
                 conn.update()
+
+
+    def init_onto_nodes(self):
+        for node in self.onto_container.nodes:
+            if node.initial:
+                node.initial_potential_period = self.initial_potential_period
 
 
     def __repr__(self):

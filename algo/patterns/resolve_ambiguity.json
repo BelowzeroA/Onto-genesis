@@ -1,11 +1,13 @@
 {
-  "waiting": 10,
+  "waiting": 20,
+  "initial_potential_period": 3,
   "nodes": [
     {
       "id": "1",
       "type": "listener",
       "filter": "concrete",
-      "num_cells": 2
+      "num_cells": 2,
+      "connected_with": "context"
     },
     {
       "id": "2",

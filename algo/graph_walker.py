@@ -14,7 +14,7 @@ class GraphWalker:
         self.fire_initial()
         self.brain.algo_container.activate_first()
         self.current_tick = 0
-        while not self.brain.algo_container.is_finished() and self.current_tick <= 40:
+        while not self.brain.algo_container.is_finished() and self.current_tick <= 50:
             self.update_state()
             print(self.brain.algo_container.active_algorithm, self.brain.onto_container)
             print(self.brain.working_memory)
@@ -32,21 +32,22 @@ class GraphWalker:
         if self.brain.algo_container.finished:
             return
         elif algorithm_switched:
-            self.reset_state()
+            self.reset_state(self.brain.algo_container.active_algorithm)
 
         self.current_tick += 1
         algorithm_switched = self.brain.algo_container.update(self.current_tick)
         if not self.brain.algo_container.finished:
             if algorithm_switched:
-                self.reset_state()
+                self.reset_state(self.brain.algo_container.active_algorithm)
             self.brain.onto_container.update()
             self.brain.working_memory.update()
 
 
-    def reset_state(self):
+    def reset_state(self, algorithm):
         for node in self.brain.onto_container.nodes:
             node.potential = 0
         self.fire_initial()
+        algorithm.init_onto_nodes()
 
 
     def fire_initial(self):
