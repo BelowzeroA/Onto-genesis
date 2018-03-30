@@ -14,7 +14,7 @@ class GraphWalker:
         self.fire_initial()
         self.brain.algo_container.activate_first()
         self.current_tick = 0
-        while not self.brain.algo_container.is_finished() and self.current_tick <= 50:
+        while not self.brain.algo_container.is_finished() and self.current_tick <= 60:
             self.update_state()
             print(self.brain.algo_container.active_algorithm, self.brain.onto_container)
             print(self.brain.working_memory)

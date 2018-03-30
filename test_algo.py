@@ -31,7 +31,7 @@ def main():
 
     brain = Brain(onto_container=onto_container, algo_container=algo_container)
 
-    input = ['side', 'check', 'cross', 'street', 'UK']
+    input = ['side', 'check', 'cross', 'street']
     # input = ['country', 'check', 'side', 'left', 'cross', 'street']
     graph_walker = GraphWalker(brain=brain)
     result = graph_walker.resolve(input)
