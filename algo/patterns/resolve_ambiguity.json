@@ -5,24 +5,38 @@
     {
       "id": "1",
       "type": "listener",
-      "filter": "concrete",
+      "filter": "abstract",
       "num_cells": 2,
-      "connected_with": "context"
+      "connected_with": "direction"
     },
     {
       "id": "2",
-      "type": "signaller",
+      "type": "writer",
       "num_cells": 2
     },
     {
       "id": "3",
       "type": "listener",
       "filter": "concrete",
-      "num_cells": 1,
+      "num_cells": 2,
       "connected_with": "context"
     },
     {
       "id": "4",
+      "type": "signaller",
+      "source": "memory",
+      "num_cells": 2
+    },
+    {
+      "id": "5",
+      "type": "listener",
+      "filter": "concrete",
+      "num_cells": 2,
+      "connected_with": "context",
+      "previously_unseen": true
+    },
+    {
+      "id": "6",
       "type": "exit"
     }
   ],
