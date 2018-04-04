@@ -1,3 +1,4 @@
+from brain.brain import Brain
 from onto.node import Node
 
 
@@ -6,7 +7,7 @@ class Connection:
     def __init__(self, source: Node, target: Node, container):
         self.source = source
         self.target = target
-        self.weight = 1
+        self.weight = Brain.default_primary_connection_weight
         self.sign = 1
         self.container = container
         self.pulsing = False
@@ -18,8 +19,12 @@ class Connection:
     def update(self):
         if self.pulsing:
             self.last_pulsing_tick = self.container.brain.current_tick
-            weight_coefficient = 0.5 if self.secondary else 1
+            weight_coefficient = Brain.default_secondary_connection_weight if self.secondary else\
+                Brain.default_primary_connection_weight
             potentiation = self.weight * weight_coefficient
+            if self.potential >= Brain.control_signal_potential:
+                potentiation = self.weight * weight_coefficient * self.potential / 2
+
             self.target.potential += potentiation # self.potential
             self.target.contributors.append('{}: {}'.format(self.source.node_id, potentiation))
         self.pulsing = False

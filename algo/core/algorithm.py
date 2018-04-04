@@ -1,7 +1,7 @@
 import ntpath
 import os
 
-from algo.op_container import OperationContainer
+from algo.core.op_container import OperationContainer
 from onto.node import Node
 
 

@@ -1,4 +1,4 @@
-from algo.operation import AlgoOperation
+from algo.core.operation import AlgoOperation
 
 
 class AlgoOperationExit(AlgoOperation):

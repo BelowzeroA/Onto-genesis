@@ -1,3 +1,5 @@
+from brain.brain import Brain
+
 
 class Node:
 
@@ -8,7 +10,7 @@ class Node:
         self.pattern = pattern
         self.firing = False
         self.initial = False
-        self.threshold = 2
+        self.threshold = Brain.default_node_threshold
         self.potential = 0
         self.abstract = abstract
         self.container = container
@@ -43,7 +45,7 @@ class Node:
 
         # leak
         if self.potential > 0 and not self.firing and not keep_firing:
-            self.potential -= 1
+            self.potential -= Brain.potential_decay_rate
             if self.potential < 0:
                 self.potential = 0
 
@@ -63,7 +65,7 @@ class Node:
                         connection.potential = self.potential
                         potential_spent = True
 
-        if self.potential > 2 and self.firing and not self.initial:
+        if self.potential > Brain.default_node_threshold and self.firing and not self.initial:
             self.container.brain.working_memory.write(self)
             self.potential = 0
 

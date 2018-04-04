@@ -1,7 +1,6 @@
 from algo.algo_container import AlgoContainer
-from algo.algorithm import Algorithm
+from algo.core.algorithm import Algorithm
 from algo.graph_walker import GraphWalker
-from algo.op_container import OperationContainer
 from brain.brain import Brain
 from onto.builder import OntoBuilder
 from onto.onto_container import OntoContainer
@@ -31,7 +30,7 @@ def main():
 
     brain = Brain(onto_container=onto_container, algo_container=algo_container)
 
-    input = ['side', 'check', 'cross', 'street']
+    input = ['side', 'check', 'cross', 'street', 'UK']
     # input = ['country', 'check', 'side', 'left', 'cross', 'street']
     graph_walker = GraphWalker(brain=brain)
     result = graph_walker.resolve(input)

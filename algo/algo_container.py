@@ -1,5 +1,5 @@
-from algo.algorithm import Algorithm
-from algo.op_listener import AlgoOperationListener
+from algo.core.algorithm import Algorithm
+from algo.core.op_listener import AlgoOperationListener
 
 
 class AlgoContainer:

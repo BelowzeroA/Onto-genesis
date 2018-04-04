@@ -1,9 +1,10 @@
 import json
 
-from algo.op_connection import OperationConnection
-from algo.op_exit import AlgoOperationExit
-from algo.op_listener import AlgoOperationListener
-from algo.op_signaller import AlgoOperationSignaller
+from algo.core.op_connection import OperationConnection
+from algo.core.op_exit import AlgoOperationExit
+from algo.core.op_listener import AlgoOperationListener
+from algo.core.op_signaller import AlgoOperationSignaller
+from algo.core.op_writer import AlgoOperationWriter
 from memory.memory_events import MemoryEvent
 
 
@@ -25,14 +26,18 @@ class OperationContainer:
             op = None
             if entry['type'] == 'signaller':
                 op = AlgoOperationSignaller(id=entry['id'], algorithm=self.algorithm, num_cells=entry['num_cells'])
+                op.source = entry['source'] if 'source' in entry else 'memory'
             elif entry['type'] == 'listener':
                 op = AlgoOperationListener(id=entry['id'], algorithm=self.algorithm, num_cells=entry['num_cells'])
                 op.filter = entry['filter'] if 'filter' in entry else None
                 op.connected_with = entry['connected_with'] if 'connected_with' in entry else None
+                op.previously_unseen = entry['previously_unseen'] if 'previously_unseen' in entry else False
                 if entry['num_cells'] == 1:
                     op.event = MemoryEvent.One
                 elif entry['num_cells'] == 2:
                     op.event = MemoryEvent.Two
+            elif entry['type'] == 'writer':
+                op = AlgoOperationWriter(id=entry['id'], algorithm=self.algorithm, num_cells=entry['num_cells'])
             elif entry['type'] == 'exit':
                 op = AlgoOperationExit(id=entry['id'], algorithm=self.algorithm)
             if op:

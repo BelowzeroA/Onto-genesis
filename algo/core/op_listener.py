@@ -1,4 +1,4 @@
-from algo.operation import AlgoOperation
+from algo.core.operation import AlgoOperation
 
 
 class AlgoOperationListener(AlgoOperation):
@@ -9,6 +9,7 @@ class AlgoOperationListener(AlgoOperation):
         self.filter = None
         self.event = None
         self.connected_with = None
+        self.previously_unseen = False
 
 
     def update(self):
@@ -27,21 +28,30 @@ class AlgoOperationListener(AlgoOperation):
         cells_to_capture = []# attention_cells[0]
 
         if self.connected_with:
-            cell_to_capture = None
             for cell in attention_cells:
+                if self.previously_unseen and wm_context['write_counter'][cell.node] > 1:
+                    continue
+                if self.filter == 'concrete' and cell.node.abstract or self.filter == 'abstract' and not cell.node.abstract:
+                    continue
                 if self._is_cell_connected_with(cell, wm_context):
                     cells_to_capture.append(cell)
                     if len(cells_to_capture) == self.num_cells:
                         break
-
-        for cell in cells_to_capture:
-            cell.captured = True
-            self.fire()
+        if len(cells_to_capture) == self.num_cells:
+            for cell in cells_to_capture:
+                cell.captured = True
+                self.fire()
 
 
     def _is_cell_connected_with(self, cell, wm_context):
         if self.connected_with == 'context':
             if not self.algorithm.onto_container.are_nodes_connected(
+                    cell.node,
+                    wm_context['context'],
+                    primary_only=False):
+                return False
+        elif self.connected_with == 'not context':
+            if self.algorithm.onto_container.are_nodes_connected(
                     cell.node,
                     wm_context['context'],
                     primary_only=False):

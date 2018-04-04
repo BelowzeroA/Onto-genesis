@@ -32,7 +32,7 @@
       "type": "listener",
       "filter": "concrete",
       "num_cells": 2,
-      "connected_with": "not context",
+      "connected_with": "context",
       "previously_unseen": true
     },
     {
@@ -48,10 +48,6 @@
     {
       "source": "3",
       "target": "4"
-    },
-    {
-      "source": "5",
-      "target": "6"
     }
   ]
 }
