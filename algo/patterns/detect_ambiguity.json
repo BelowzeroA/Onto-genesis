@@ -1,6 +1,7 @@
 {
   "waiting": 25,
   "initial_potential_period": 3,
+  "reply_type": "ambiguity",
   "nodes": [
     {
       "id": "1",

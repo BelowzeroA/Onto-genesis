@@ -73,7 +73,7 @@ class OntoContainer:
 
 
     def get_nodes_by_pattern(self, patterns):
-        return [self.get_node_by_pattern(pattern) for pattern in patterns]
+        return [node for node in [self.get_node_by_pattern(pattern) for pattern in patterns] if node is not None]
 
 
     def get_node_by_pattern(self, pattern):

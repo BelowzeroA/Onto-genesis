@@ -19,6 +19,7 @@ class OntoBuilder:
         self.nodes = set()
         self.id_counter = 0
         self.fact_counter = 0
+        self.direction_counter = 0
         self.container = OntoContainer()
 
 
@@ -42,12 +43,21 @@ class OntoBuilder:
     def build_facts(self, filename):
         lines = OntoBuilder.load_list_from_file(filename)
         direction_nodes = []
+        fact_nodes = []
         for line in lines:
             if line.startswith('#'):
                 continue
             node = self._build_fact(line)
             if node:
-                direction_nodes.append(node)
+                if line[:2].lower() == 'to':
+                    self.direction_counter += 1
+                    node.pattern = 'direction {}'.format(self.direction_counter)
+                    direction_nodes.append(node)
+                else:
+                    self.fact_counter += 1
+                    node.pattern = 'fact {}'.format(self.fact_counter)
+                    fact_nodes.append(node)
+
         if len(direction_nodes) > 1:
             self.id_counter += 1
             pattern = 'direction'
@@ -55,7 +65,6 @@ class OntoBuilder:
             self.container.nodes.append(abstract_direction_node)
             for node in direction_nodes:
                 self._add_bidirect_connections(abstract_direction_node, node)
-
 
 
     def store(self, filename):
@@ -139,9 +148,9 @@ class OntoBuilder:
             self._add_bidirect_connections(nodes_to_connect[0], nodes_to_connect[1])
         else:
             self.id_counter += 1
-            self.fact_counter += 1
-            pattern = 'direction {}'.format(self.fact_counter)
-            fact_node = Node(id=str(self.id_counter), pattern=pattern, container=self.container, abstract=True)
+            # self.fact_counter += 1
+            # pattern = 'direction {}'.format(self.fact_counter)
+            fact_node = Node(id=str(self.id_counter), pattern='', container=self.container, abstract=True)
             fact_node.knowledge_center = True
             self.container.nodes.append(fact_node)
             for node in nodes_to_connect:

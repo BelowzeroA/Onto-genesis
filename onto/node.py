@@ -11,7 +11,7 @@ class Node:
         self.firing = False
         self.initial = False
         self.threshold = Brain.default_node_threshold
-        self.potential = 0
+        self._potential = 0
         self.abstract = abstract
         self.container = container
         self.last_firing_tick = 0
@@ -21,15 +21,25 @@ class Node:
         self.contributors = []
 
 
+    @property
+    def potential(self):
+        return self._potential
+
+
+    @potential.setter
+    def potential(self, value):
+        self._potential = value
+
+
     def fire(self):
         self.last_firing_tick = self.container.brain.current_tick
         self.firing = True
         if self.potential == 0:
             self.potential = 1
-        incoming_connections = self.container.get_incoming_connections(self)
-        for conn in incoming_connections:
-            if conn.pulsing:
-                conn.upgrade_weight()
+        # incoming_connections = self.container.get_incoming_connections(self)
+        # for conn in incoming_connections:
+        #     if conn.pulsing:
+        #         conn.upgrade_weight()
 
 
     def update(self):

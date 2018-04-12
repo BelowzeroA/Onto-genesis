@@ -12,10 +12,12 @@ class WorkingMemory:
     def __init__(self, brain):
         self.brain = brain
         self.listeners = []
+        self.subscribers = []
         self.context = None
         self.cells: List[WorkingMemoryCell] = []
         self.stack: List = []
         self.write_counter = {}
+        self.support_context = False
         for i in range(memory_limit):
             self.cells.append(WorkingMemoryCell())
 
@@ -27,11 +29,17 @@ class WorkingMemory:
         for cell in self.cells:
             if cell.free:
                 cell.write(node)
+                self.notify_subscribers(node)
                 if node in self.write_counter:
                     self.write_counter[node] += 1
                 else:
                     self.write_counter[node] = 1
                 break
+
+
+    def notify_subscribers(self, node):
+        for subscriber in self.subscribers:
+            subscriber(node)
 
 
     def push(self, num_cells):
@@ -43,6 +51,10 @@ class WorkingMemory:
             cell.captured = False
             if num_pushed >= num_cells:
                 break
+
+
+    def attach_subscriber(self, function):
+        self.subscribers.append(function)
 
 
     def attach_listener(self, operation):
@@ -139,7 +151,7 @@ class WorkingMemory:
     def update(self):
         self.check_listeners()
 
-        if self.context:
+        if self.context and self.support_context:
             self.context.fire()
 
         for cell in self.cells:
@@ -150,6 +162,6 @@ class WorkingMemory:
         repr = ''
         for cell in self.cells:
             if not cell.free:
-                repr += '[ {} ] '.format(cell.node.node_id)
+                repr += '[{} {}] '.format(cell.node.node_id, cell.node.pattern)
         return repr
 

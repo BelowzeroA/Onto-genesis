@@ -9,6 +9,7 @@ class AlgoOperationListener(AlgoOperation):
         self.filter = None
         self.event = None
         self.connected_with = None
+        self.is_ = None
         self.previously_unseen = False
 
 
@@ -26,6 +27,13 @@ class AlgoOperationListener(AlgoOperation):
                 return
         attention_cells = wm_context['attention']
         cells_to_capture = []# attention_cells[0]
+
+        if self.is_:
+            for cell in attention_cells:
+                if self._is_cell_is(cell, wm_context):
+                    self.fire()
+                    cell.captured = True
+                    break
 
         if self.connected_with:
             for cell in attention_cells:
@@ -64,3 +72,11 @@ class AlgoOperationListener(AlgoOperation):
                     primary_only=True):
                 return False
         return True
+
+
+    def _is_cell_is(self, cell, wm_context):
+        if self.is_ == 'context':
+            if cell.node == wm_context['context']:
+                return True
+        return False
+

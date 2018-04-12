@@ -14,10 +14,7 @@ class AlgoOperationSignaller(AlgoOperation):
         super(AlgoOperationSignaller, self).update()
         if self.firing:
             self.firing = False
-            # if self.algorithm.brain.current_tick - self.last_firing_tick >
             if not self.fired:
                 self.algorithm.brain.working_memory.broadcast(self.num_cells, source=self.source)
                 print('signaller {} fired'.format(self.node_id))
             self.fired = True
-            # self.last_firing_tick = self.algorithm.brain.current_tick
-

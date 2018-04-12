@@ -1,5 +1,6 @@
 {
   "waiting": 15,
+  "reply_type": "memory",
   "nodes": [
     {
       "id": "1",

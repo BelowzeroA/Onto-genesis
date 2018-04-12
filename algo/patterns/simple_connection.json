@@ -1,13 +1,12 @@
 {
   "waiting": 15,
-  "reply_type": "memory",
+  "reply_type": "yes",
   "nodes": [
     {
       "id": "1",
       "type": "listener",
       "num_cells": 1,
-      "filter": "concrete",
-      "connected_with": "context"
+      "is": "context"
     },
     {
       "id": "2",

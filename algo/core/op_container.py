@@ -31,6 +31,7 @@ class OperationContainer:
                 op = AlgoOperationListener(id=entry['id'], algorithm=self.algorithm, num_cells=entry['num_cells'])
                 op.filter = entry['filter'] if 'filter' in entry else None
                 op.connected_with = entry['connected_with'] if 'connected_with' in entry else None
+                op.is_ = entry['is'] if 'is' in entry else None
                 op.previously_unseen = entry['previously_unseen'] if 'previously_unseen' in entry else False
                 if entry['num_cells'] == 1:
                     op.event = MemoryEvent.One

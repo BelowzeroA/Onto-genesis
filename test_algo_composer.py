@@ -1,40 +1,44 @@
 from algo.algo_container import AlgoContainer
 from algo.core.algorithm import Algorithm
 from algo.graph_walker import GraphWalker
+from algo.train.algo_composer import AlgoComposer
+from algo.train.estimator import Estimator
 from brain.brain import Brain
 from onto.builder import OntoBuilder
 from onto.onto_container import OntoContainer
 
 
 def main():
-
     builder = OntoBuilder()
     builder.build_knowledge_base('data/knowledge_base.txt')
     builder.build_facts('data/fact_base.txt')
-    builder.store('data/knowledge_base.json')
+    # builder.store('data/knowledge_base.json')
 
     onto_container = OntoContainer()
-    # onto_container.load("data/sample1.json")
     onto_container.load("data/knowledge_base.json")
     onto_container.build_secondary_connections()
 
-    algo1 = Algorithm(onto_container=onto_container, filename='algo/patterns/because_i_know.json')
-    algo2 = Algorithm(onto_container=onto_container, filename='algo/patterns/inference_bridge.json')
-    algo3 = Algorithm(onto_container=onto_container, filename='algo/patterns/resolve_ambiguity.json')
-
+    algo1 = Algorithm(onto_container=onto_container, filename='algo/patterns/simple_connection.json')
 
     algo_container = AlgoContainer()
     algo_container.add_algorithm(algo1)
-    algo_container.add_algorithm(algo2)
-    algo_container.add_algorithm(algo3)
 
     brain = Brain(onto_container=onto_container, algo_container=algo_container)
+    estimator = Estimator(brain)
+    algo_composer = AlgoComposer(brain=brain, estimator=estimator)
 
-    input = 'what side should I check to cross the street in USA?'
-    # input = ['country', 'check', 'side', 'left', 'cross', 'street']
+    input = 'do people in Russia speak english?'
+    # input = 'does USA have people?'
+
     graph_walker = GraphWalker(brain=brain)
+    graph_walker.train_mode = True
     result = graph_walker.resolve(input)
     print(result)
+    exit()
+
+    algorithm = algo_composer.compose(input, 'right')
+    if algorithm:
+        algorithm.save('algo/patterns/composed.json')
 
 
 if __name__ == '__main__':

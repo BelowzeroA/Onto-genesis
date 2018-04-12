@@ -7,11 +7,12 @@ from onto.node import Node
 
 class Algorithm:
 
-    def __init__(self, onto_container, filename):
+    def __init__(self, onto_container, filename=None):
         self.algo_id = id
-        self.name = os.path.splitext(ntpath.basename(filename))[0]
         self.container = OperationContainer(onto_container=onto_container, algorithm=self)
-        self.container.load(filename)
+        if filename:
+            self.container.load(filename)
+            self.name = os.path.splitext(ntpath.basename(filename))[0]
         self.onto_container = onto_container
         self.active = False
         self.finished = False
@@ -19,6 +20,7 @@ class Algorithm:
         self.start_tick = 0
         self.current_tick = 0
         self.wait_ticks = self.container.entries['waiting']
+        self.reply_type = self.container.entries['reply_type']
         self.initial_potential_period = self.container.entries['initial_potential_period'] \
             if 'initial_potential_period' in self.container.entries else Node.initial_potential_period
         self.next = None

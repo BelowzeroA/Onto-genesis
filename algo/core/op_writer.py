@@ -16,5 +16,3 @@ class AlgoOperationWriter(AlgoOperation):
             if not self.fired:
                 self.algorithm.brain.working_memory.push(self.num_cells)
             self.fired = True
-            # self.last_firing_tick = self.algorithm.brain.current_tick
-
